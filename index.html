@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>🦐 Feed the Shrimp! 🦐</title>
+    <title>🦐 Happy Birthday David Buivid! 🎉</title>
     <style>
         * {
             margin: 0;
@@ -13,573 +12,907 @@
             box-sizing: border-box;
         }
 
-```
-    body {
-        overflow: hidden;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        position: relative;
-    }
-    
-    /* Ocean wave effect */
-    body::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(ellipse at top, rgba(255,255,255,0.1) 0%, transparent 70%),
-            radial-gradient(ellipse at bottom, rgba(0,0,0,0.2) 0%, transparent 70%);
-        pointer-events: none;
-    }
-    
-    #gate {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 1000;
-    }
-    
-    #gate h1 {
-        color: white;
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        text-align: center;
-        padding: 0 1rem;
-    }
-    
-    #startBtn {
-        font-size: 1.5rem;
-        padding: 1rem 2rem;
-        border: none;
-        border-radius: 50px;
-        background: linear-gradient(45deg, #ff6b35, #f7931e);
-        color: white;
-        cursor: pointer;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        transition: transform 0.2s;
-    }
-    
-    #startBtn:active {
-        transform: scale(0.95);
-    }
-    
-    #instructions {
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        text-align: center;
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        pointer-events: none;
-        z-index: 10;
-    }
-    
-    #instructions h2 {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    #stats {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        color: white;
-        font-size: 1.2rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        z-index: 10;
-        background: rgba(0, 0, 0, 0.3);
-        padding: 10px 15px;
-        border-radius: 10px;
-    }
-    
-    #stats div {
-        margin: 5px 0;
-    }
-    
-    .krill {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        transition: transform 0.2s;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    }
-    
-    .krill:hover {
-        transform: scale(1.2);
-    }
-    
-    .toxic-krill {
-        animation: pulse 0.5s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-    }
-    
-    .shrimp {
-        position: absolute;
-        width: 60px;
-        height: 40px;
-        transform-origin: center;
-        will-change: transform;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        transition: filter 0.3s;
-    }
-    
-    .shrimp.insane {
-        filter: drop-shadow(0 0 20px rgba(255,0,255,0.8)) 
-                drop-shadow(0 0 40px rgba(255,0,255,0.4))
-                brightness(1.5) saturate(2);
-        animation: insane-wobble 0.2s ease-in-out infinite;
-    }
-    
-    @keyframes insane-wobble {
-        0%, 100% { transform: rotate(0deg) scale(1); }
-        25% { transform: rotate(-5deg) scale(1.1); }
-        75% { transform: rotate(5deg) scale(0.9); }
-    }
-    
-    .particle {
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        pointer-events: none;
-    }
-    
-    .eat-particle {
-        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-        animation: eat-burst 0.5s ease-out forwards;
-    }
-    
-    @keyframes eat-burst {
-        0% { 
-            transform: scale(0) translate(0, 0);
-            opacity: 1;
+        body {
+            overflow: hidden;
+            background: linear-gradient(135deg, 
+#667eea 0%, 
+#764ba2 25%, 
+#f093fb 50%, 
+#4facfe 75%, 
+#00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        100% { 
-            transform: scale(3) translate(var(--dx), var(--dy));
-            opacity: 0;
-        }
-    }
-    
-    .toxic-particle {
-        background: radial-gradient(circle, rgba(255,0,255,1) 0%, rgba(255,0,255,0) 70%);
-        box-shadow: 0 0 10px rgba(255,0,255,0.8);
-        animation: toxic-burst 1s ease-out forwards;
-    }
-    
-    @keyframes toxic-burst {
-        0% { 
-            transform: scale(0) translate(0, 0);
-            opacity: 1;
-        }
-        100% { 
-            transform: scale(5) translate(var(--dx), var(--dy));
-            opacity: 0;
-        }
-    }
-    
-    #warning {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 3rem;
-        color: #ff00ff;
-        text-shadow: 0 0 20px rgba(255,0,255,0.8);
-        z-index: 20;
-        font-weight: bold;
-        pointer-events: none;
-        display: none;
-    }
-    
-    .bubble {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 50%;
-        animation: bubble-rise 8s ease-in-out infinite;
-        pointer-events: none;
-        z-index: 1;
-    }
-    
-    @keyframes bubble-rise {
-        0% {
-            transform: translateY(100vh) translateX(0);
-            opacity: 0;
-        }
-        10% {
-            opacity: 0.6;
-        }
-        90% {
-            opacity: 0.6;
-        }
-        100% {
-            transform: translateY(-100px) translateX(30px);
-            opacity: 0;
-        }
-    }
-</style>
-```
 
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #gate {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        #gate h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        #startBtn {
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, 
+#f093fb, 
+#f5576c);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        #startBtn:active {
+            transform: scale(0.95);
+        }
+
+        #canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #birthday-message {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #birthday-message h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #shake-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            z-index: 20;
+            animation: pulse 0.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        #shrimp-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        #danger-alert {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            z-index: 15;
+            animation: flash 0.5s ease-in-out infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .shrimp, .fish {
+            position: absolute;
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        .shrimp {
+            width: 60px;
+            height: 40px;
+        }
+
+        .fish {
+            width: 120px;
+            height: 60px;
+            z-index: 5;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            @keyframes gradientShift {
+                0%, 100% { background-position: 0% 50%; }
+            }
+            .shrimp, .fish {
+                animation: float 6s ease-in-out infinite;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-fade 1s ease-out forwards;
+        }
+
+        @keyframes particle-fade {
+            0% { 
+                transform: scale(0) translate(0, 0);
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(3) translate(var(--dx), var(--dy));
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="gate">
-        <h1>🦐 Feed the Shrimp! 🦐</h1>
-        <button id="startBtn">Start Feeding 🦗</button>
+        <h1>🦐 Happy Birthday David Buivid! 🦐</h1>
+        <button id="startBtn">Tap to start the shrimp party 🦐🎉</button>
     </div>
 
-```
-<div id="instructions" style="display: none;">
-    <h2>Feed the shrimp krill!</h2>
-    <p>Tap krill to feed • Green = Safe • Purple = TOXIC! 🤯</p>
-</div>
+    <div id="birthday-message" style="display: none;">
+        <h1>🎉 Happy Birthday David! 🎉</h1>
+        <p>Tap & flick the shrimp! Watch out for the fish!</p>
+    </div>
 
-<div id="warning">🤯 INSANE-O SHRIMP! 🤯</div>
+    <div id="shake-message" style="display: none;">
+        🦐 SHAKE IT UP! 🦐
+    </div>
 
-<div id="stats" style="display: none;">
-    <div>🦐 Shrimp: <span id="shrimp-count">1</span></div>
-    <div>🦗 Fed: <span id="krill-fed">0</span></div>
-    <div>☠️ Toxic: <span id="toxic-count">0</span></div>
-    <div>🤯 Insane: <span id="insane-count">0</span></div>
-</div>
+    <div id="danger-alert" style="display: none;">
+        🐟 FISH ALERT! SHAKE TO SPAWN MORE SHRIMP! 🦐
+    </div>
 
-<script>
-    // Shrimp sprite
-    const shrimpSprite = 'data:image/svg+xml;base64,' + btoa(`<svg width="60" height="40" xmlns="http://www.w3.org/2000/svg">
-        <g transform="rotate(-10 30 20)">
-            <ellipse cx="15" cy="20" rx="14" ry="10" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
-            <ellipse cx="28" cy="20" rx="12" ry="8" fill="#ff7745" stroke="#d64545" stroke-width="1"/>
-            <ellipse cx="38" cy="20" rx="10" ry="6" fill="#ff8855" stroke="#d64545" stroke-width="1"/>
-            <ellipse cx="46" cy="20" rx="6" ry="4" fill="#ff9965" stroke="#d64545" stroke-width="1"/>
-            <path d="M50 20 L55 17 L56 20 L55 23 Z" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
-            <circle cx="12" cy="17" r="2.5" fill="#000"/>
-            <circle cx="13" cy="16" r="1" fill="#fff"/>
-            <path d="M8 16 Q4 12 2 10 M8 18 Q4 16 2 16" stroke="#d64545" stroke-width="1.5" fill="none"/>
-            <path d="M15 24 L14 28 M20 25 L19 29 M25 24 L24 28 M30 23 L29 27" stroke="#d64545" stroke-width="1" fill="none"/>
-        </g>
-    </svg>`);
-    
-    // Regular krill sprite (green)
-    const krillSprite = 'data:image/svg+xml;base64,' + btoa(`<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="10" cy="10" rx="8" ry="6" fill="#4ade80" stroke="#16a34a" stroke-width="1"/>
-        <ellipse cx="10" cy="10" rx="5" ry="3" fill="#86efac" opacity="0.6"/>
-        <circle cx="7" cy="8" r="1" fill="#000"/>
-        <circle cx="13" cy="8" r="1" fill="#000"/>
-        <path d="M5 12 Q4 14 3 15 M15 12 Q16 14 17 15" stroke="#16a34a" stroke-width="0.8" fill="none"/>
-        <path d="M6 10 L4 8 M14 10 L16 8" stroke="#16a34a" stroke-width="0.5" fill="none"/>
-    </svg>`);
-    
-    // Toxic krill sprite (purple)
-    const toxicKrillSprite = 'data:image/svg+xml;base64,' + btoa(`<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="10" cy="10" rx="8" ry="6" fill="#c084fc" stroke="#9333ea" stroke-width="1"/>
-        <ellipse cx="10" cy="10" rx="5" ry="3" fill="#e9d5ff" opacity="0.8"/>
-        <circle cx="7" cy="8" r="1.5" fill="#f00"/>
-        <circle cx="13" cy="8" r="1.5" fill="#f00"/>
-        <path d="M5 12 Q4 14 3 15 M15 12 Q16 14 17 15" stroke="#9333ea" stroke-width="1" fill="none"/>
-        <path d="M6 10 L4 8 M14 10 L16 8" stroke="#9333ea" stroke-width="0.8" fill="none"/>
-        <path d="M7 13 Q10 15 13 13" stroke="#000" stroke-width="0.8" fill="none"/>
-    </svg>`);
-    
-    class Krill {
-        constructor(x, y, isToxic = false) {
-            this.x = x;
-            this.y = y;
-            this.isToxic = isToxic;
-            this.vx = (Math.random() - 0.5) * 50;
-            this.vy = Math.random() * 50 + 20;
-            this.lifespan = 5 + Math.random() * 3;
-            
-            this.element = document.createElement('img');
-            this.element.className = 'krill' + (isToxic ? ' toxic-krill' : '');
-            this.element.src = isToxic ? toxicKrillSprite : krillSprite;
-            this.element.style.left = x + 'px';
-            this.element.style.top = y + 'px';
-            document.body.appendChild(this.element);
-            
-            this.element.addEventListener('click', () => this.handleClick());
-        }
-        
-        update(dt) {
-            this.lifespan -= dt;
-            this.vy += 50 * dt; // gravity
-            this.x += this.vx * dt;
-            this.y += this.vy * dt;
-            
-            this.element.style.left = this.x + 'px';
-            this.element.style.top = this.y + 'px';
-            
-            // Fade out near end of life
-            if (this.lifespan < 1) {
-                this.element.style.opacity = this.lifespan;
+    <div id="shrimp-counter" style="display: none;">
+        🦐 Shrimp: <span id="shrimp-count">0</span>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // Shrimp sprites as base64 encoded SVGs
+        const shrimpSprites = [
+            // Shrimp 1 - Orange/Red
+            'data:image/svg+xml;base64,' + btoa(<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
+                <g transform="rotate(-10 40 20)">
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
+                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff7745" stroke="#d64545" stroke-width="1"/>
+                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#ff8855" stroke="#d64545" stroke-width="1"/>
+                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#ff9965" stroke="#d64545" stroke-width="1"/>
+                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
+                    <circle cx="15" cy="17" r="3" fill="#000"/>
+                    <circle cx="16" cy="16" r="1" fill="#fff"/>
+                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#d64545" stroke-width="1.5" fill="none"/>
+                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#d64545" stroke-width="1" fill="none"/>
+                </g>
+            </svg>),
+
+            // Shrimp 2 - Pink
+            'data:image/svg+xml;base64,' + btoa(<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
+                <g transform="rotate(-10 40 20)">
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff1493" stroke="#c71585" stroke-width="1"/>
+                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff69b4" stroke="#c71585" stroke-width="1"/>
+                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#ffb6c1" stroke="#c71585" stroke-width="1"/>
+                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#ffc0cb" stroke="#c71585" stroke-width="1"/>
+                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff1493" stroke="#c71585" stroke-width="1"/>
+                    <circle cx="15" cy="17" r="3" fill="#000"/>
+                    <circle cx="16" cy="16" r="1" fill="#fff"/>
+                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#c71585" stroke-width="1.5" fill="none"/>
+                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#c71585" stroke-width="1" fill="none"/>
+                </g>
+            </svg>),
+
+            // Shrimp 3 - Purple
+            'data:image/svg+xml;base64,' + btoa(<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
+                <g transform="rotate(-10 40 20)">
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#9370db" stroke="#7b68ee" stroke-width="1"/>
+                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#a58fe9" stroke="#7b68ee" stroke-width="1"/>
+                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#b19cd9" stroke="#7b68ee" stroke-width="1"/>
+                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#dda0dd" stroke="#7b68ee" stroke-width="1"/>
+                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#9370db" stroke="#7b68ee" stroke-width="1"/>
+                    <circle cx="15" cy="17" r="3" fill="#000"/>
+                    <circle cx="16" cy="16" r="1" fill="#fff"/>
+                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#7b68ee" stroke-width="1.5" fill="none"/>
+                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#7b68ee" stroke-width="1" fill="none"/>
+                </g>
+            </svg>),
+
+            // Shrimp 4 - Cyan/Teal
+            'data:image/svg+xml;base64,' + btoa(<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
+                <g transform="rotate(-10 40 20)">
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#00ced1" stroke="#008b8b" stroke-width="1"/>
+                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#40e0d0" stroke="#008b8b" stroke-width="1"/>
+                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#48d1cc" stroke="#008b8b" stroke-width="1"/>
+                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#afeeee" stroke="#008b8b" stroke-width="1"/>
+                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#00ced1" stroke="#008b8b" stroke-width="1"/>
+                    <circle cx="15" cy="17" r="3" fill="#000"/>
+                    <circle cx="16" cy="16" r="1" fill="#fff"/>
+                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#008b8b" stroke-width="1.5" fill="none"/>
+                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#008b8b" stroke-width="1" fill="none"/>
+                </g>
+            </svg>),
+
+            // Shrimp 5 - Golden/Yellow
+            'data:image/svg+xml;base64,' + btoa(<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
+                <g transform="rotate(-10 40 20)">
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ffd700" stroke="#daa520" stroke-width="1"/>
+                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ffed4e" stroke="#daa520" stroke-width="1"/>
+                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#fff68f" stroke="#daa520" stroke-width="1"/>
+                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#fffacd" stroke="#daa520" stroke-width="1"/>
+                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ffd700" stroke="#daa520" stroke-width="1"/>
+                    <circle cx="15" cy="17" r="3" fill="#000"/>
+                    <circle cx="16" cy="16" r="1" fill="#fff"/>
+                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#daa520" stroke-width="1.5" fill="none"/>
+                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#daa520" stroke-width="1" fill="none"/>
+                </g>
+            </svg>)
+        ];
+
+        // Fish sprite
+        const fishSprite = 'data:image/svg+xml;base64,' + btoa(<svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+            <g>
+                <!-- Body -->
+                <ellipse cx="60" cy="30" rx="45" ry="25" fill="#2c3e50" stroke="#1a252f" stroke-width="2"/>
+                <!-- Tail -->
+                <path d="M15 30 L5 15 L0 30 L5 45 Z" fill="#2c3e50" stroke="#1a252f" stroke-width="2"/>
+                <!-- Fins -->
+                <path d="M60 15 Q50 5 45 10 M60 45 Q50 55 45 50" stroke="#1a252f" stroke-width="2" fill="#34495e"/>
+                <!-- Eye -->
+                <circle cx="85" cy="25" r="6" fill="#e74c3c"/>
+                <circle cx="87" cy="23" r="2" fill="#000"/>
+                <!-- Mouth -->
+                <path d="M100 30 Q105 35 100 40 L95 35 Z" fill="#c0392b"/>
+                <!-- Stripes -->
+                <path d="M40 10 Q40 30 40 50 M55 10 Q55 30 55 50 M70 10 Q70 30 70 50" stroke="#34495e" stroke-width="3" opacity="0.5"/>
+            </g>
+        </svg>);
+
+        // Fish class
+        class Fish {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.angle = 0;
+                this.width = 120;
+                this.height = 60;
+                this.speed = 150;
+                this.target = null;
+                this.eating = false;
+                this.eatTimer = 0;
+
+                this.element = document.createElement('img');
+                this.element.className = 'fish';
+                this.element.src = fishSprite;
+                document.body.appendChild(this.element);
             }
-            
-            return this.lifespan > 0 && this.y < window.innerHeight + 50;
-        }
-        
-        handleClick() {
-            if (gameState.selectedShrimp) {
-                gameState.selectedShrimp.feed(this);
-                this.destroy();
+
+            update(dt, shrimps) {
+                // Find nearest shrimp
+                let nearestShrimp = null;
+                let nearestDist = Infinity;
+
+                shrimps.forEach(shrimp => {
+                    if (!shrimp.isDragging) {
+                        const dx = shrimp.x - this.x;
+                        const dy = shrimp.y - this.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < nearestDist) {
+                            nearestDist = dist;
+                            nearestShrimp = shrimp;
+                        }
+                    }
+                });
+
+                this.target = nearestShrimp;
+
+                if (this.target && !this.eating) {
+                    // Chase the nearest shrimp
+                    const dx = this.target.x - this.x;
+                    const dy = this.target.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist > 0) {
+                        // Accelerate towards target
+                        const targetVx = (dx / dist) * this.speed;
+                        const targetVy = (dy / dist) * this.speed;
+
+                        this.vx += (targetVx - this.vx) * 0.1;
+                        this.vy += (targetVy - this.vy) * 0.1;
+
+                        this.angle = Math.atan2(dy, dx);
+                    }
+
+                    // Check if caught shrimp
+                    if (dist < 40) {
+                        this.eating = true;
+                        this.eatTimer = 1.0;
+                        return this.target; // Return caught shrimp
+                    }
+                } else if (this.eating) {
+                    // Eating animation
+                    this.eatTimer -= dt;
+                    if (this.eatTimer <= 0) {
+                        this.eating = false;
+                    }
+                } else {
+                    // Wander if no target
+                    this.vx *= 0.95;
+                    this.vy *= 0.95;
+                }
+
+                // Update position
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+
+                // Keep fish on screen
+                this.x = Math.max(this.width/2, Math.min(window.innerWidth - this.width/2, this.x));
+                this.y = Math.max(this.height/2, Math.min(window.innerHeight - this.height/2, this.y));
+
+                // Update visual
+                const scale = this.eating ? 1.2 : 1;
+                this.element.style.transform = translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${scale});
+
+                return null;
+            }
+
+            scare(fx, fy) {
+                // Make fish swim away when phone is shaken
+                this.vx = -fx * 2;
+                this.vy = -fy * 2;
+            }
+
+            destroy() {
+                this.element.remove();
             }
         }
-        
-        destroy() {
-            this.element.remove();
-            const index = krillList.indexOf(this);
-            if (index > -1) krillList.splice(index, 1);
-        }
-    }
-    
-    class Shrimp {
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.vx = 0;
-            this.vy = 0;
-            this.angle = 0;
-            this.targetX = x;
-            this.targetY = y;
-            this.hunger = 100;
-            this.insanity = 0;
-            this.insaneTimer = 0;
-            this.scale = 1;
-            
-            this.element = document.createElement('img');
-            this.element.className = 'shrimp';
-            this.element.src = shrimpSprite;
-            document.body.appendChild(this.element);
-            
-            this.updateVisual();
-        }
-        
-        update(dt) {
-            // Hunger decreases over time
-            this.hunger = Math.max(0, this.hunger - 5 * dt);
-            
-            // Move towards target
-            const dx = this.targetX - this.x;
-            const dy = this.targetY - this.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            if (dist > 5) {
-                const speed = this.insaneTimer > 0 ? 400 : 200;
-                this.vx = (dx / dist) * speed;
-                this.vy = (dy / dist) * speed;
-                this.angle = Math.atan2(dy, dx);
-            } else {
-                this.vx *= 0.9;
-                this.vy *= 0.9;
-                
-                // Wander when idle
-                if (Math.random() < 0.02) {
-                    this.targetX = Math.random() * window.innerWidth;
-                    this.targetY = Math.random() * window.innerHeight;
+
+        // Enhanced Shrimp class (same as before with minor additions)
+        class Shrimp {
+            constructor(x, y, spriteIndex) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 200;
+                this.vy = (Math.random() - 0.5) * 200;
+                this.angle = Math.random() * Math.PI * 2;
+                this.angularVelocity = (Math.random() - 0.5) * 5;
+                this.spriteIndex = spriteIndex;
+                this.width = 80;
+                this.height = 40;
+                this.bounciness = 0.85 + Math.random() * 0.1;
+                this.mass = 0.8 + Math.random() * 0.4;
+                this.swimTimer = Math.random() * Math.PI * 2;
+                this.isDragging = false;
+                this.touchId = null;
+                this.fleeSpeed = 300; // Speed when fleeing from fish
+
+                this.element = document.createElement('img');
+                this.element.className = 'shrimp';
+                this.element.src = shrimpSprites[spriteIndex % shrimpSprites.length];
+                this.element.style.filter = hue-rotate(${Math.random() * 30 - 15}deg) brightness(${0.9 + Math.random() * 0.2});
+                this.element.style.cursor = 'grab';
+                document.body.appendChild(this.element);
+
+                // Touch/mouse handlers
+                this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+                this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
+            }
+
+            handleTouchStart(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                this.startDrag(touch.identifier, touch.clientX, touch.clientY);
+            }
+
+            handleMouseDown(e) {
+                e.preventDefault();
+                this.startDrag('mouse', e.clientX, e.clientY);
+            }
+
+            startDrag(id, x, y) {
+                this.isDragging = true;
+                this.touchId = id;
+                this.dragStartX = x;
+                this.dragStartY = y;
+                this.dragStartTime = Date.now();
+                this.lastDragX = x;
+                this.lastDragY = y;
+                this.element.style.cursor = 'grabbing';
+                this.element.style.zIndex = '100';
+            }
+
+            handleDrag(x, y) {
+                if (!this.isDragging) return;
+
+                const dx = x - this.lastDragX;
+                const dy = y - this.lastDragY;
+
+                this.x = x;
+                this.y = y;
+                this.vx = dx * 10;
+                this.vy = dy * 10;
+
+                this.lastDragX = x;
+                this.lastDragY = y;
+            }
+
+            endDrag() {
+                if (!this.isDragging) return;
+
+                const dragTime = Date.now() - this.dragStartTime;
+                const dragDistance = Math.sqrt(
+                    Math.pow(this.lastDragX - this.dragStartX, 2) + 
+                    Math.pow(this.lastDragY - this.dragStartY, 2)
+                );
+
+                // Flick detection
+                if (dragTime < 200 && dragDistance > 30) {
+                    const flickMultiplier = Math.min(dragDistance / 50, 3);
+                    this.vx *= flickMultiplier;
+                    this.vy *= flickMultiplier;
+                    this.angularVelocity = (Math.random() - 0.5) * 20;
+                }
+
+                this.isDragging = false;
+                this.touchId = null;
+                this.element.style.cursor = 'grab';
+                this.element.style.zIndex = '';
+            }
+
+            update(dt, gravity, damping, fish) {
+                if (this.isDragging) return;
+
+                // Flee from fish
+                if (fish && fish.target === this) {
+                    const dx = this.x - fish.x;
+                    const dy = this.y - fish.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 200 && dist > 0) {
+                        // Panic swim away
+                        const fleeX = (dx / dist) * this.fleeSpeed;
+                        const fleeY = (dy / dist) * this.fleeSpeed;
+                        this.vx += fleeX * dt;
+                        this.vy += fleeY * dt;
+                        this.angularVelocity = (Math.random() - 0.5) * 15;
+                    }
+                }
+
+                // Natural swimming motion
+                this.swimTimer += dt * 3;
+                const swimForce = Math.sin(this.swimTimer) * 20;
+
+                // Apply gravity with swimming motion
+                this.vx += (gravity.x * dt + Math.cos(this.angle) * swimForce * dt) / this.mass;
+                this.vy += (gravity.y * dt + Math.sin(this.angle) * swimForce * dt) / this.mass;
+
+                // Add some random "wiggle"
+                this.vx += (Math.random() - 0.5) * 50 * dt;
+                this.vy += (Math.random() - 0.5) * 50 * dt;
+
+                // Apply damping
+                this.vx *= damping;
+                this.vy *= damping;
+                this.angularVelocity *= damping;
+
+                // Update position
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+                this.angle += this.angularVelocity * dt;
+
+                // Bounce off walls with spin
+                if (this.x < this.width/2) {
+                    this.x = this.width/2;
+                    this.vx = Math.abs(this.vx) * this.bounciness;
+                    this.angularVelocity = this.vx * 0.05;
+                }
+                if (this.x > window.innerWidth - this.width/2) {
+                    this.x = window.innerWidth - this.width/2;
+                    this.vx = -Math.abs(this.vx) * this.bounciness;
+                    this.angularVelocity = -this.vx * 0.05;
+                }
+                if (this.y < this.height/2) {
+                    this.y = this.height/2;
+                    this.vy = Math.abs(this.vy) * this.bounciness;
+                    this.angularVelocity += (Math.random() - 0.5) * 3;
+                }
+                if (this.y > window.innerHeight - this.height/2) {
+                    this.y = window.innerHeight - this.height/2;
+                    this.vy = -Math.abs(this.vy) * this.bounciness;
+                    this.angularVelocity += (Math.random() - 0.5) * 3;
+                }
+
+                // Update visual position with scale effect based on velocity
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                const scale = 1 + Math.min(speed / 500, 0.3);
+                this.element.style.transform = translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${scale});
+            }
+
+            applyForce(fx, fy) {
+                this.vx += fx / this.mass;
+                this.vy += fy / this.mass;
+                this.angularVelocity += (Math.random() - 0.5) * 10;
+            }
+
+            checkCollision(other) {
+                const dx = this.x - other.x;
+                const dy = this.y - other.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const minDistance = (this.width + other.width) * 0.7;
+
+                if (distance < minDistance && distance > 0) {
+                    // More realistic collision with mass
+                    const angle = Math.atan2(dy, dx);
+                    const sin = Math.sin(angle);
+                    const cos = Math.cos(angle);
+
+                    // Rotate velocities
+                    const vx1 = this.vx * cos + this.vy * sin;
+                    const vy1 = this.vy * cos - this.vx * sin;
+                    const vx2 = other.vx * cos + other.vy * sin;
+                    const vy2 = other.vy * cos - other.vx * sin;
+
+                    // Collision reaction with mass
+                    const finalVx1 = ((this.mass - other.mass) * vx1 + 2 * other.mass * vx2) / (this.mass + other.mass);
+                    const finalVx2 = ((other.mass - this.mass) * vx2 + 2 * this.mass * vx1) / (this.mass + other.mass);
+
+                    // Rotate back
+                    this.vx = finalVx1 * cos - vy1 * sin;
+                    this.vy = vy1 * cos + finalVx1 * sin;
+                    other.vx = finalVx2 * cos - vy2 * sin;
+                    other.vy = vy2 * cos + finalVx2 * sin;
+
+                    // Separate overlapping shrimp
+                    const overlap = minDistance - distance;
+                    const separateX = overlap * cos * 0.5;
+                    const separateY = overlap * sin * 0.5;
+                    this.x += separateX;
+                    this.y += separateY;
+                    other.x -= separateX;
+                    other.y -= separateY;
+
+                    // Add spin
+                    this.angularVelocity += (Math.random() - 0.5) * 8;
+                    other.angularVelocity += (Math.random() - 0.5) * 8;
                 }
             }
-            
-            // Insane behavior
-            if (this.insaneTimer > 0) {
-                this.insaneTimer -= dt;
-                this.vx += (Math.random() - 0.5) * 200;
-                this.vy += (Math.random() - 0.5) * 200;
-                this.angle += (Math.random() - 0.5) * 0.5;
-                
-                if (this.insaneTimer <= 0) {
-                    this.element.classList.remove('insane');
-                    this.insanity = Math.max(0, this.insanity - 20);
-                    updateStats();
+
+            destroy() {
+                this.element.remove();
+            }
+        }
+
+        let shrimps = [];
+        let fish = null;
+        let currentShrimpIndex = 0;
+        let lastShakeTime = 0;
+        let shakeCount = 0;
+        let gravity = { x: 0, y: 100 };
+        let lastTime = performance.now();
+        let animationId = null;
+        let prefersReducedMotion = false;
+        let fishSpawnTimer = 0;
+        let dangerAlertTimeout = null;
+
+        // Check for reduced motion preference
+        if (window.matchMedia) {
+            prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        // Update shrimp counter
+        function updateShrimpCount() {
+            document.getElementById('shrimp-count').textContent = shrimps.length;
+        }
+
+        // Request motion permission and initialize
+        async function requestMotion() {
+            try {
+                if (typeof DeviceMotionEvent?.requestPermission === 'function') {
+                    const res = await DeviceMotionEvent.requestPermission();
+                    if (res === 'granted') {
+                        init();
+                    } else {
+                        console.log('Motion permission denied, using fixed gravity');
+                        init();
+                    }
+                } else {
+                    // Desktop or Android
+                    init();
                 }
-            }
-            
-            this.x += this.vx * dt;
-            this.y += this.vy * dt;
-            
-            // Keep on screen
-            this.x = Math.max(30, Math.min(window.innerWidth - 30, this.x));
-            this.y = Math.max(20, Math.min(window.innerHeight - 20, this.y));
-            
-            // Size based on hunger
-            this.scale = 0.8 + (this.hunger / 100) * 0.4;
-            
-            this.updateVisual();
-        }
-        
-        updateVisual() {
-            const wobble = this.insaneTimer > 0 ? Math.sin(Date.now() * 0.01) * 10 : 0;
-            this.element.style.transform = `translate(${this.x - 30}px, ${this.y - 20}px) rotate(${this.angle + wobble}rad) scale(${this.scale})`;
-            
-            // Color changes based on state
-            if (this.insaneTimer > 0) {
-                this.element.style.filter = `hue-rotate(${Math.sin(Date.now() * 0.01) * 360}deg) brightness(1.5) saturate(2)`;
-            } else if (this.hunger < 30) {
-                this.element.style.filter = 'brightness(0.6) saturate(0.5)';
-            } else {
-                this.element.style.filter = '';
+            } catch (err) {
+                console.error('Error requesting motion permission:', err);
+                init();
             }
         }
-        
-        feed(krill) {
-            // Move to krill position
-            this.targetX = krill.x;
-            this.targetY = krill.y;
-            
-            // Create eat particles
+
+        // Initialize
+        function init() {
+            document.getElementById('gate').remove();
+            document.getElementById('birthday-message').style.display = 'block';
+            document.getElementById('shrimp-counter').style.display = 'block';
+
+            // Canvas for background effects only
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Add initial shrimp with variety - random positions
+            for (let i = 0; i < 8; i++) {
+                currentShrimpIndex = i;
+                setTimeout(() => {
+                    addShrimp(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
+                    );
+                }, i * 150);
+            }
+
+            // Set timer to spawn fish
+            fishSpawnTimer = 5 + Math.random() * 5; // Spawn fish after 5-10 seconds
+
+            // Handle device motion
+            if (!prefersReducedMotion) {
+                window.addEventListener('devicemotion', handleMotion);
+            }
+
+            // Touch/mouse event handlers
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+
+            // Handle window resize
+            window.addEventListener('resize', handleResize);
+
+            // Start animation loop
+            animate();
+        }
+
+        // Add a new shrimp
+        function addShrimp(x, y) {
+            const shrimp = new Shrimp(
+                x || Math.random() * window.innerWidth,
+                y || Math.random() * window.innerHeight / 2,
+                currentShrimpIndex % shrimpSprites.length
+            );
+            shrimps.push(shrimp);
+            updateShrimpCount();
+        }
+
+        // Add new shrimp species with burst effect
+        function addShrimpSpecies() {
+            currentShrimpIndex++;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Create a burst of shrimp
             for (let i = 0; i < 5; i++) {
-                createParticle(krill.x, krill.y, krill.isToxic ? 'toxic' : 'eat');
-            }
-            
-            if (krill.isToxic) {
-                // TOXIC KRILL EFFECT!
-                this.insanity += 50;
-                this.insaneTimer = 5 + Math.random() * 5;
-                this.element.classList.add('insane');
-                
-                // Show warning
-                const warning = document.getElementById('warning');
-                warning.style.display = 'block';
-                setTimeout(() => warning.style.display = 'none', 2000);
-                
-                // Screen shake effect
-                document.body.style.animation = 'shake 0.5s';
-                setTimeout(() => document.body.style.animation = '', 500);
-                
-                gameState.toxicCount++;
-            } else {
-                // Normal krill
-                this.hunger = Math.min(100, this.hunger + 30);
-                gameState.krillFed++;
-            }
-            
-            updateStats();
-        }
-    }
-    
-    function createParticle(x, y, type) {
-        const particle = document.createElement('div');
-        particle.className = `particle ${type}-particle`;
-        particle.style.left = x + 'px';
-        particle.style.top = y + 'px';
-        particle.style.setProperty('--dx', `${(Math.random() - 0.5) * 100}px`);
-        particle.style.setProperty('--dy', `${(Math.random() - 0.5) * 100}px`);
-        document.body.appendChild(particle);
-        
-        setTimeout(() => particle.remove(), 1000);
-    }
-    
-    function createBubble() {
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        bubble.style.left = Math.random() * window.innerWidth + 'px';
-        bubble.style.animationDelay = Math.random() * 8 + 's';
-        bubble.style.animationDuration = (6 + Math.random() * 4) + 's';
-        document.body.appendChild(bubble);
-        
-        setTimeout(() => bubble.remove(), 10000);
-    }
-    
-    // Add screen shake animation
-    const shakeStyle = document.createElement('style');
-    shakeStyle.textContent = `
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-10px, 5px); }
-            50% { transform: translate(10px, -5px); }
-            75% { transform: translate(-5px, -10px); }
-        }
-    `;
-    document.head.appendChild(shakeStyle);
-    
-    let shrimps = [];
-    let krillList = [];
-    let gameState = {
-        krillFed: 0,
-        toxicCount: 0,
-        selectedShrimp: null
-    };
-    let lastTime = performance.now();
-    let krillSpawnTimer = 0;
-    
-    function updateStats() {
-        document.getElementById('shrimp-count').textContent = shrimps.length;
-        document.getElementById('krill-fed').textContent = gameState.krillFed;
-        document.getElementById('toxic-count').textContent = gameState.toxicCount;
-        
-        const insaneCount = shrimps.filter(s => s.insaneTimer > 0).length;
-        document.getElementById('insane-count').textContent = insaneCount;
-    }
-    
-    function spawnKrill() {
-        const x = Math.random() * (window.innerWidth - 40) + 20;
-        const y = -20;
-        const isToxic = Math.random() < 0.15; // 15% chance of toxic krill
-        
-        krillList.push(new Krill(x, y, isToxic));
-    }
-    
-    function gameLoop() {
-        const currentTime = performance.now();
-        const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
-        lastTime = currentTime;
-        
-        // Update shrimp
-        shrimps.forEach(shrimp => shrimp.update(dt));
-        
-        // Update krill
-        krillList = krillList.filter(krill => krill.update(dt));
-        
-        // Spawn krill
-        krillSpawnTimer -= dt;
-        if (krillSpawnTimer <= 0) {
-            spawnKrill();
-            krillSpawnTimer = 1 + Math.random() * 2;
-        }
-        
-        // Select closest shrimp to mouse/touch
-        if (shrimps.length > 0 && !gameState.selectedShrimp) {
-            gameState.selectedShrimp = shrimps[0];
-        }
-        
-        requestAnimationFrame(gameLoop);
-    }
-    
-    function init() {
-        document.getElementById('gate').remove();
-        document.getElementById('instructions').style.display = 'block';
-        document.getElementById('stats').style.display = 'block';
-        
-        // Create initial shrimp
-        const shrimp = new Shrimp(window.innerWidth / 2, window.innerHeight / 2);
-        shrimps.push(shrimp);
-        gameState.selectedShrimp = shrimp;
-        
-        // Create background bubbles
-        for (let i = 0; i < 10; i++) {
-            setTimeout(() => createBubble(), i * 1000);
-        }
-        setInterval(createBubble, 3000);
-        
-        updateStats();
-        gameLoop();
-    }
-    
-    // Start button
-    document.getElementById('startBtn').addEventListener('click', init);
-</script>
-```
+                setTimeout(() => {
+                    const angle = (Math.PI * 2 * i) / 5;
+                    const distance = 50;
+                    addShrimp(
+                        centerX + Math.cos(angle) * distance,
+                        centerY + Math.sin(angle) * distance
+                    );
 
+                    // Give them outward velocity
+                    const newShrimp = shrimps[shrimps.length - 1];
+                    newShrimp.vx = Math.cos(angle) * 300;
+                    newShrimp.vy = Math.sin(angle) * 300;
+                }, i * 50);
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            const currentTime = performance.now();
+            const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
+            lastTime = currentTime;
+
+            const damping = prefersReducedMotion ? 0.95 : 0.985;
+
+            // Fish spawn timer
+            if (!fish && fishSpawnTimer > 0) {
+                fishSpawnTimer -= dt;
+                if (fishSpawnTimer <= 0 && shrimps.length > 3) {
+                    // Spawn fish at edge of screen
+                    const side = Math.floor(Math.random() * 4);
+                    let x, y;
+                    switch(side) {
+                        case 0: x = -60; y = Math.random() * window.innerHeight; break;
+                        case 1: x = window.innerWidth + 60; y = Math.random() * window.innerHeight; break;
+                        case 2: x = Math.random() * window.innerWidth; y = -30; break;
+                        case 3: x = Math.random() * window.innerWidth; y = window.innerHeight + 30; break;
+                    }
+                    fish = new Fish(x, y);
+
+                    // Show danger alert
+                    document.getElementById('danger-alert').style.display = 'block';
+                    clearTimeout(dangerAlertTimeout);
+                    dangerAlertTimeout = setTimeout(() => {
+                        document.getElementById('danger-alert').style.display = 'none';
+                    }, 3000);
+                }
+            }
+
+            // Update fish
+            if (fish) {
+                const caughtShrimp = fish.update(dt, shrimps);
+                if (caughtShrimp) {
+                    // Remove eaten shrimp
+                    const index = shrimps.indexOf(caughtShrimp);
+                    if (index > -1) {
+                        shrimps.splice(index, 1);
+                        caughtShrimp.destroy();
+                        updateShrimpCount();
+
+                        // If too few shrimp, make fish leave
+                        if (shrimps.length < 2) {
+                            fish.destroy();
+                            fish = null;
+                            fishSpawnTimer = 10 + Math.random() * 10; // Wait longer before next fish
+                        }
+                    }
+                }
+            }
+
+            // Update shrimp
+            for (let i = 0; i < shrimps.length; i++) {
+                shrimps[i].update(dt, gravity, damping, fish);
+
+                // Check collisions
+                for (let j = i + 1; j < shrimps.length; j++) {
+                    shrimps[i].checkCollision(shrimps[j]);
+                }
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Touch/mouse handlers
+        function handleTouchMove(e) {
+            e.preventDefault();
+            for (let i = 0; i < e.touches.length; i++) {
+                const touch = e.touches[i];
+                shrimps.forEach(shrimp => {
+                    if (shrimp.touchId === touch.identifier) {
+                        shrimp.handleDrag(touch.clientX, touch.clientY);
+                    }
+                });
+            }
+        }
+
+        function handleTouchEnd(e) {
+            const remainingTouches = Array.from(e.touches).map(t => t.identifier);
+            shrimps.forEach(shrimp => {
+                if (shrimp.touchId && !remainingTouches.includes(shrimp.touchId)) {
+                    shrimp.endDrag();
+                }
+            });
+        }
+
+        function handleMouseMove(e) {
+            shrimps.forEach(shrimp => {
+                if (shrimp.touchId === 'mouse') {
+                    shrimp.handleDrag(e.clientX, e.clientY);
+                }
+            });
+        }
+
+        function handleMouseUp(e) {
+            shrimps.forEach(shrimp => {
+                if (shrimp.touchId === 'mouse') {
+                    shrimp.endDrag();
+                }
+            });
+        }
+
+        // Handle device motion with shake message
+        const SHAKE_THRESHOLD = 15; // m/s²
+        let shakeMessageTimeout;
+
+        function handleMotion(event) {
+            if (!event.accelerationIncludingGravity) return;
+
+            const { x, y, z } = event.accelerationIncludingGravity;
+            const magnitude = Math.sqrt(x * x + y * y + z * z);
+
+            // Update gravity based on device orientation
+            gravity.x = x * 10;
+            gravity.y = -y * 10;
+
+            // Detect shake
+            if (magnitude > SHAKE_THRESHOLD) {
+                const now = Date.now();
+                if (now - lastShakeTime > 300) {
+                    lastShakeTime = now;
+                    shakeCount++;
+
+                    // Show shake message
+                    const shakeMsg = document.getElementById('shake-message');
+                    shakeMsg.style.display = 'block';
+                    clearTimeout(shakeMessageTimeout);
+                    shakeMessageTimeout = setTimeout(() => {
+                        shakeMsg.style.display = 'none';
+                    }, 1500);
+
+                    // Apply force to all shrimp
+                    shrimps.forEach(shrimp => {
+                        shrimp.applyForce(
+                            (Math.random() - 0.5) * 300,
+                            (Math.random() - 0.5) * 300
+                        );
+                    });
+
+                    // Scare the fish away
+                    if (fish) {
+                        fish.scare(x * 50, y * 50);
+                    }
+
+                    // Double shake detection
+                    if (shakeCount % 2 === 0) {
+                        addShrimpSpecies();
+                    }
+                }
+            }
+        }
+
+        // Handle window resize
+        function handleResize() {
+            const canvas = document.getElementById('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Attach start button listener
+        document.getElementById('startBtn').addEventListener('click', requestMotion);
+    </script>
 </body>
 </html>
