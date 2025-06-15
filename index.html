@@ -11,6 +11,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        @media (prefers-reduced-motion: reduce) {
+            @keyframes gradientShift {
+                0%, 100% { background-position: 0% 50%; }
+            function animate() {
         }
         
         body {
@@ -88,10 +92,24 @@
             cursor: grab;
         }
         
-        @media (prefers-reduced-motion: reduce) {
-            @keyframes gradientShift {
-                0%, 100% { background-position: 0% 50%; }
-            }
+        #shake-message {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            animation: shake-text 0.5s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 10;
+            display: none;
+        }
+        
+        @keyframes shake-text {
+            0% { transform: translateX(-50%) rotate(-5deg) scale(1); }
+            100% { transform: translateX(-50%) rotate(5deg) scale(1.1); }
         }
     </style>
 </head>
@@ -103,7 +121,11 @@
     
     <div id="birthday-message" style="display: none;">
         <h1>🎉 Happy Birthday David! 🎉</h1>
-        <p>Tap & flick the shrimp!</p>
+        <p>Shake to spawn more shrimp!</p>
+    </div>
+    
+    <div id="shake-message" style="display: none;">
+        🦐 SHAKE IT UP! 🦐
     </div>
     
     <script>
@@ -304,6 +326,8 @@
         
         let shrimps = [];
         let currentShrimpIndex = 0;
+        let lastShakeTime = 0;
+        let shakeCount = 0;
         let gravity = { x: 0, y: 100 };
         let lastTime = performance.now();
         let prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -340,7 +364,28 @@
             shrimps.push(shrimp);
         }
         
-        function animate() {
+        function addShrimpBurst() {
+            currentShrimpIndex++;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            // Create a burst of 3 shrimp
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const angle = (Math.PI * 2 * i) / 3;
+                    const distance = 50;
+                    const x = centerX + Math.cos(angle) * distance;
+                    const y = centerY + Math.sin(angle) * distance;
+                    
+                    addShrimp(x, y);
+                    
+                    // Give them outward velocity
+                    const newShrimp = shrimps[shrimps.length - 1];
+                    newShrimp.vx = Math.cos(angle) * 150;
+                    newShrimp.vy = Math.sin(angle) * 150;
+                }, i * 50);
+            }
+        }
             const currentTime = performance.now();
             const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
             lastTime = currentTime;
@@ -358,11 +403,51 @@
             requestAnimationFrame(animate);
         }
         
+        const SHAKE_THRESHOLD = 15;
+        let shakeMessageTimeout;
+        
         function handleMotion(event) {
             if (!event.accelerationIncludingGravity) return;
-            const { x, y } = event.accelerationIncludingGravity;
+            const { x, y, z } = event.accelerationIncludingGravity;
+            
+            // Update gravity
             gravity.x = x * 30;
             gravity.y = -y * 30;
+            
+            // Calculate shake magnitude
+            const magnitude = Math.sqrt(x * x + y * y + z * z);
+            
+            // Detect shake
+            if (magnitude > SHAKE_THRESHOLD) {
+                const now = Date.now();
+                if (now - lastShakeTime > 300) {
+                    lastShakeTime = now;
+                    shakeCount++;
+                    
+                    console.log('Shake detected! Count:', shakeCount);
+                    
+                    // Show shake message
+                    const shakeMsg = document.getElementById('shake-message');
+                    shakeMsg.style.display = 'block';
+                    clearTimeout(shakeMessageTimeout);
+                    shakeMessageTimeout = setTimeout(() => {
+                        shakeMsg.style.display = 'none';
+                    }, 1500);
+                    
+                    // Apply force to all shrimp
+                    shrimps.forEach(shrimp => {
+                        shrimp.applyForce(
+                            (Math.random() - 0.5) * 100,
+                            (Math.random() - 0.5) * 100
+                        );
+                    });
+                    
+                    // Double shake spawns new shrimp
+                    if (shakeCount % 2 === 0) {
+                        addShrimpBurst();
+                    }
+                }
+            }
         }
         
         function handleTouchMove(e) {
