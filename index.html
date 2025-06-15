@@ -21,9 +21,22 @@
             transition: background 1s ease;
         }
         
-        body.koi-mode {
-            background: radial-gradient(ellipse at center, #1a4d66 0%, #0d2936 100%);
-            animation: none;
+        body.sand-mode {
+            background: linear-gradient(180deg, 
+                #ff6b6b 0%, 
+                #feca57 20%, 
+                #ff9ff3 40%, 
+                #54a0ff 60%, 
+                #48dbfb 80%, 
+                #0abde3 100%);
+            background-size: 100% 300%;
+            animation: sunsetFlow 20s ease infinite;
+        }
+        
+        @keyframes sunsetFlow {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 0% 100%; }
+            100% { background-position: 0% 0%; }
         }
         
         @keyframes gradientShift {
@@ -254,8 +267,151 @@
             </svg>`)
         ];
         
-        // Koi sprites
-        const koiSprites = [
+        // Sand particle colors
+        const sandColors = [
+            '#ff6b6b', // Coral red
+            '#feca57', // Golden yellow
+            '#ff9ff3', // Rose pink
+            '#ee5a6f', // Deep coral
+            '#f368e0', // Magenta
+            '#ffa502', // Orange
+            '#ff7675', // Light red
+            '#fdcb6e', // Light gold
+            '#6c5ce7', // Purple
+            '#74b9ff', // Sky blue
+            '#a29bfe', // Lavender
+            '#fd79a8'  // Pink
+        ];
+        
+        // Sand particle class
+        class SandParticle {
+            constructor(x, y, colorIndex) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 50;
+                this.vy = (Math.random() - 0.5) * 50;
+                this.size = 15 + Math.random() * 35;
+                this.mass = this.size / 30;
+                this.color = sandColors[colorIndex % sandColors.length];
+                this.opacity = 0.6 + Math.random() * 0.4;
+                
+                this.element = document.createElement('div');
+                this.element.className = 'sand-particle';
+                this.element.style.width = this.size + 'px';
+                this.element.style.height = this.size + 'px';
+                this.element.style.background = `radial-gradient(circle, ${this.color} 0%, ${this.color}88 70%, ${this.color}00 100%)`;
+                this.element.style.opacity = this.opacity;
+                document.body.appendChild(this.element);
+                
+                this.isDragging = false;
+                this.touchId = null;
+                
+                this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+                this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
+            }
+            
+            handleTouchStart(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                this.startDrag(touch.identifier, touch.clientX, touch.clientY);
+            }
+            
+            handleMouseDown(e) {
+                e.preventDefault();
+                this.startDrag('mouse', e.clientX, e.clientY);
+            }
+            
+            startDrag(id, x, y) {
+                this.isDragging = true;
+                this.touchId = id;
+                this.lastDragX = x;
+                this.lastDragY = y;
+                this.element.style.cursor = 'grabbing';
+                this.element.style.zIndex = '100';
+            }
+            
+            handleDrag(x, y) {
+                if (!this.isDragging) return;
+                
+                const dx = x - this.lastDragX;
+                const dy = y - this.lastDragY;
+                
+                this.x = x;
+                this.y = y;
+                this.vx = dx * 5;
+                this.vy = dy * 5;
+                
+                this.lastDragX = x;
+                this.lastDragY = y;
+            }
+            
+            endDrag() {
+                if (!this.isDragging) return;
+                this.isDragging = false;
+                this.touchId = null;
+                this.element.style.cursor = 'grab';
+                this.element.style.zIndex = '';
+            }
+            
+            update(dt, gravity, damping) {
+                if (this.isDragging) return;
+                
+                // Liquid physics with viscosity
+                this.vx += gravity.x * dt / this.mass;
+                this.vy += gravity.y * dt / this.mass;
+                
+                // High damping for liquid feel
+                this.vx *= 0.92;
+                this.vy *= 0.92;
+                
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+                
+                // Soft boundaries
+                const padding = this.size / 2;
+                if (this.x < padding) {
+                    this.x = padding;
+                    this.vx *= -0.5;
+                }
+                if (this.x > window.innerWidth - padding) {
+                    this.x = window.innerWidth - padding;
+                    this.vx *= -0.5;
+                }
+                if (this.y < padding) {
+                    this.y = padding;
+                    this.vy *= -0.5;
+                }
+                if (this.y > window.innerHeight - padding) {
+                    this.y = window.innerHeight - padding;
+                    this.vy *= -0.5;
+                }
+                
+                this.element.style.transform = `translate(${this.x - this.size/2}px, ${this.y - this.size/2}px)`;
+            }
+            
+            checkLiquidInteraction(other) {
+                const dx = this.x - other.x;
+                const dy = this.y - other.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const minDistance = (this.size + other.size) * 0.8;
+                
+                if (distance < minDistance && distance > 0) {
+                    // Soft liquid-like repulsion
+                    const force = (minDistance - distance) / minDistance * 0.5;
+                    const fx = (dx / distance) * force * 50;
+                    const fy = (dy / distance) * force * 50;
+                    
+                    this.vx += fx / this.mass;
+                    this.vy += fy / this.mass;
+                    other.vx -= fx / other.mass;
+                    other.vy -= fy / other.mass;
+                }
+            }
+            
+            destroy() {
+                this.element.remove();
+            }
+        }
             'data:image/svg+xml;base64,' + btoa(`<svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="koiGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -559,6 +715,7 @@
         
         // Global variables
         let creatures = [];
+        let sandParticles = [];
         let currentCreatureIndex = 0;
         let lastShakeTime = 0;
         let shakeCount = 0;
@@ -632,35 +789,78 @@
         
         // Switch between modes
         function switchMode() {
-            const newMode = currentMode === 'shrimp' ? 'koi' : 'shrimp';
+            let newMode;
+            if (currentMode === 'shrimp') {
+                newMode = 'koi';
+            } else if (currentMode === 'koi') {
+                newMode = 'sand';
+            } else {
+                newMode = 'shrimp';
+            }
+            
             currentMode = newMode;
             
-            document.body.classList.toggle('koi-mode', newMode === 'koi');
+            // Update body classes
+            document.body.classList.remove('koi-mode', 'sand-mode');
+            if (newMode === 'koi') {
+                document.body.classList.add('koi-mode');
+            } else if (newMode === 'sand') {
+                document.body.classList.add('sand-mode');
+            }
             
             // Show mode indicator
             const indicator = document.getElementById('mode-indicator');
-            indicator.textContent = newMode === 'koi' ? '🐟 Koi Pond Mode 🐟' : '🦐 Shrimp Party Mode 🦐';
+            if (newMode === 'koi') {
+                indicator.textContent = '🐟 Koi Pond Mode 🐟';
+            } else if (newMode === 'sand') {
+                indicator.textContent = '🌅 Sand Art Mode 🌅';
+            } else {
+                indicator.textContent = '🦐 Shrimp Party Mode 🦐';
+            }
             indicator.classList.add('show');
             setTimeout(() => indicator.classList.remove('show'), 2000);
             
             // Clear existing creatures
             creatures.forEach(c => c.destroy());
             creatures = [];
+            sandParticles.forEach(p => p.destroy());
+            sandParticles = [];
             
-            // Add new creatures - fewer for better performance
-            for (let i = 0; i < 5; i++) {
-                currentCreatureIndex = i;
-                setTimeout(() => {
-                    addCreature(
-                        Math.random() * window.innerWidth,
-                        Math.random() * window.innerHeight
-                    );
-                }, i * 150);
+            // Add new elements based on mode
+            if (newMode === 'sand') {
+                // Add sand particles
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const particle = new SandParticle(
+                            Math.random() * window.innerWidth,
+                            Math.random() * window.innerHeight,
+                            i
+                        );
+                        sandParticles.push(particle);
+                    }, i * 50);
+                }
+            } else {
+                // Add creatures for shrimp/koi modes
+                for (let i = 0; i < 5; i++) {
+                    currentCreatureIndex = i;
+                    setTimeout(() => {
+                        addCreature(
+                            Math.random() * window.innerWidth,
+                            Math.random() * window.innerHeight
+                        );
+                    }, i * 150);
+                }
             }
             
             // Update message
             const shakeMsg = document.getElementById('shake-message');
-            shakeMsg.innerHTML = newMode === 'koi' ? '🐟 KOI TIME! 🐟' : '🦐 SHAKE IT UP! 🦐';
+            if (newMode === 'koi') {
+                shakeMsg.innerHTML = '🐟 KOI TIME! 🐟';
+            } else if (newMode === 'sand') {
+                shakeMsg.innerHTML = '🌅 SAND FLOW! 🌅';
+            } else {
+                shakeMsg.innerHTML = '🦐 SHAKE IT UP! 🦐';
+            }
         }
         
         // Add creature
@@ -709,13 +909,25 @@
             
             const damping = prefersReducedMotion ? 0.95 : 0.985;
             
-            // Update creatures
-            for (let i = 0; i < creatures.length; i++) {
-                creatures[i].update(dt, gravity, damping);
-                
-                // Check collisions
-                for (let j = i + 1; j < creatures.length; j++) {
-                    creatures[i].checkCollision(creatures[j]);
+            if (currentMode === 'sand') {
+                // Update sand particles
+                for (let i = 0; i < sandParticles.length; i++) {
+                    sandParticles[i].update(dt, gravity, damping);
+                    
+                    // Liquid interactions
+                    for (let j = i + 1; j < sandParticles.length; j++) {
+                        sandParticles[i].checkLiquidInteraction(sandParticles[j]);
+                    }
+                }
+            } else {
+                // Update creatures
+                for (let i = 0; i < creatures.length; i++) {
+                    creatures[i].update(dt, gravity, damping);
+                    
+                    // Check collisions
+                    for (let j = i + 1; j < creatures.length; j++) {
+                        creatures[i].checkCollision(creatures[j]);
+                    }
                 }
             }
             
@@ -732,6 +944,11 @@
                         creature.handleDrag(touch.clientX, touch.clientY);
                     }
                 });
+                sandParticles.forEach(particle => {
+                    if (particle.touchId === touch.identifier) {
+                        particle.handleDrag(touch.clientX, touch.clientY);
+                    }
+                });
             }
         }
         
@@ -742,6 +959,11 @@
                     creature.endDrag();
                 }
             });
+            sandParticles.forEach(particle => {
+                if (particle.touchId && !remainingTouches.includes(particle.touchId)) {
+                    particle.endDrag();
+                }
+            });
         }
         
         function handleMouseMove(e) {
@@ -750,12 +972,22 @@
                     creature.handleDrag(e.clientX, e.clientY);
                 }
             });
+            sandParticles.forEach(particle => {
+                if (particle.touchId === 'mouse') {
+                    particle.handleDrag(e.clientX, e.clientY);
+                }
+            });
         }
         
         function handleMouseUp(e) {
             creatures.forEach(creature => {
                 if (creature.touchId === 'mouse') {
                     creature.endDrag();
+                }
+            });
+            sandParticles.forEach(particle => {
+                if (particle.touchId === 'mouse') {
+                    particle.endDrag();
                 }
             });
         }
@@ -802,16 +1034,23 @@
                         shakeMsg.style.display = 'none';
                     }, 1500);
                     
-                    // Apply force to all creatures
-                    creatures.forEach(creature => {
-                        creature.applyForce(
-                            (Math.random() - 0.5) * 100,
-                            (Math.random() - 0.5) * 100
-                        );
-                    });
+                    // Apply force based on mode
+                    if (currentMode === 'sand') {
+                        sandParticles.forEach(particle => {
+                            particle.vx += (Math.random() - 0.5) * 200;
+                            particle.vy += (Math.random() - 0.5) * 200;
+                        });
+                    } else {
+                        creatures.forEach(creature => {
+                            creature.applyForce(
+                                (Math.random() - 0.5) * 100,
+                                (Math.random() - 0.5) * 100
+                            );
+                        });
+                    }
                     
                     // Double shake detection
-                    if (shakeCount % 2 === 0) {
+                    if (shakeCount % 2 === 0 && currentMode !== 'sand') {
                         addCreatureSpecies();
                     }
                 }
