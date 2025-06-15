@@ -18,7 +18,6 @@
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            position: relative;
         }
         
         @keyframes gradientShift {
@@ -34,23 +33,16 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
         }
         
         #gate h1 {
             color: white;
-            font-size: clamp(2rem, 5vw, 3rem);
+            font-size: 2.5rem;
             margin-bottom: 2rem;
             text-align: center;
             padding: 0 1rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
         }
         
         #startBtn {
@@ -62,18 +54,7 @@
             color: white;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        #startBtn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s;
         }
         
         #startBtn:active {
@@ -87,7 +68,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
         }
         
         #birthday-message {
@@ -100,67 +80,91 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             pointer-events: none;
             z-index: 10;
-            animation: slideDown 0.5s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from {
-                transform: translateX(-50%) translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
         }
         
         #birthday-message h1 {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-size: 2rem;
             margin-bottom: 0.5rem;
         }
         
         #shake-message {
-            position: fixed;
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2rem;
+            font-size: 3rem;
             color: white;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            z-index: 20;
+            animation: pulse 0.5s ease-in-out infinite;
             pointer-events: none;
-            z-index: 100;
-            animation: shakeMessage 0.5s ease-out;
         }
         
-        @keyframes shakeMessage {
-            0% { transform: translate(-50%, -50%) scale(0) rotate(0); }
-            50% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
-            100% { transform: translate(-50%, -50%) scale(1) rotate(0); }
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        #shrimp-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+        
+        #danger-alert {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            z-index: 15;
+            animation: flash 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .shrimp, .fish {
+            position: absolute;
+            transform-origin: center;
+            will-change: transform;
         }
         
         .shrimp {
-            position: absolute;
-            width: 80px;
+            width: 60px;
             height: 40px;
-            transform-origin: center;
-            will-change: transform;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-            transition: filter 0.2s;
         }
         
-        .shrimp:hover {
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)) brightness(1.1);
+        .fish {
+            width: 120px;
+            height: 60px;
+            z-index: 5;
         }
         
-        .shrimp.dragging {
-            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4)) brightness(1.2);
+        @media (prefers-reduced-motion: reduce) {
+            @keyframes gradientShift {
+                0%, 100% { background-position: 0% 50%; }
+            }
+            .shrimp, .fish {
+                animation: float 6s ease-in-out infinite;
+            }
         }
         
         .particle {
             position: absolute;
-            width: 6px;
-            height: 6px;
-            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
             pointer-events: none;
             animation: particle-fade 1s ease-out forwards;
@@ -172,62 +176,8 @@
                 opacity: 1;
             }
             100% { 
-                transform: scale(4) translate(var(--dx), var(--dy));
+                transform: scale(3) translate(var(--dx), var(--dy));
                 opacity: 0;
-            }
-        }
-        
-        .bubble {
-            position: absolute;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: bubble-rise 3s ease-out forwards;
-        }
-        
-        @keyframes bubble-rise {
-            0% {
-                transform: translateY(0) scale(0);
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 0.4;
-            }
-            100% {
-                transform: translateY(-200px) scale(1);
-                opacity: 0;
-            }
-        }
-        
-        #score {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 1.2rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            z-index: 10;
-        }
-        
-        .power-up {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            animation: rotate 2s linear infinite;
-            cursor: pointer;
-            z-index: 50;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -235,146 +185,228 @@
 <body>
     <div id="gate">
         <h1>🦐 Happy Birthday David Buivid! 🦐</h1>
-        <button id="startBtn">Tap to start the shrimp party! 🎉</button>
+        <button id="startBtn">Tap to start the shrimp party 🦐🎉</button>
     </div>
     
     <div id="birthday-message" style="display: none;">
         <h1>🎉 Happy Birthday David! 🎉</h1>
-        <p>Tap, flick & shake for surprises!</p>
+        <p>Tap & flick the shrimp! Watch out for the fish!</p>
     </div>
     
     <div id="shake-message" style="display: none;">
         🦐 SHAKE IT UP! 🦐
     </div>
     
-    <div id="score" style="display: none;">
-        Shrimp: <span id="shrimpCount">0</span> | Score: <span id="scoreValue">0</span>
+    <div id="danger-alert" style="display: none;">
+        🐟 FISH ALERT! SHAKE TO SPAWN MORE SHRIMP! 🦐
+    </div>
+    
+    <div id="shrimp-counter" style="display: none;">
+        🦐 Shrimp: <span id="shrimp-count">0</span>
     </div>
     
     <canvas id="canvas"></canvas>
     
     <script>
-        // Enhanced shrimp sprites with more variety
+        // Shrimp sprites as base64 encoded SVGs
         const shrimpSprites = [
-            // Original shrimp sprites (keeping your existing ones)
+            // Shrimp 1 - Orange/Red
             'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#ff9965;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
                 <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="url(#grad1)" stroke="#d64545" stroke-width="1"/>
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
                     <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff7745" stroke="#d64545" stroke-width="1"/>
                     <ellipse cx="48" cy="20" rx="12" ry="8" fill="#ff8855" stroke="#d64545" stroke-width="1"/>
                     <ellipse cx="58" cy="20" rx="8" ry="6" fill="#ff9965" stroke="#d64545" stroke-width="1"/>
                     <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
                     <circle cx="15" cy="17" r="3" fill="#000"/>
                     <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <circle cx="14" cy="17" r="0.5" fill="#fff" opacity="0.5"/>
                     <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#d64545" stroke-width="1.5" fill="none"/>
                     <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#d64545" stroke-width="1" fill="none"/>
                 </g>
             </svg>`),
             
+            // Shrimp 2 - Pink
             'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#ff1493;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#ffc0cb;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
                 <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="url(#grad2)" stroke="#c71585" stroke-width="1"/>
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff1493" stroke="#c71585" stroke-width="1"/>
                     <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff69b4" stroke="#c71585" stroke-width="1"/>
                     <ellipse cx="48" cy="20" rx="12" ry="8" fill="#ffb6c1" stroke="#c71585" stroke-width="1"/>
                     <ellipse cx="58" cy="20" rx="8" ry="6" fill="#ffc0cb" stroke="#c71585" stroke-width="1"/>
                     <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff1493" stroke="#c71585" stroke-width="1"/>
                     <circle cx="15" cy="17" r="3" fill="#000"/>
                     <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <circle cx="14" cy="17" r="0.5" fill="#fff" opacity="0.5"/>
                     <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#c71585" stroke-width="1.5" fill="none"/>
                     <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#c71585" stroke-width="1" fill="none"/>
                 </g>
             </svg>`),
             
+            // Shrimp 3 - Purple
             'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#9370db;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#dda0dd;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
                 <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="url(#grad3)" stroke="#7b68ee" stroke-width="1"/>
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#9370db" stroke="#7b68ee" stroke-width="1"/>
                     <ellipse cx="35" cy="20" rx="15" ry="10" fill="#a58fe9" stroke="#7b68ee" stroke-width="1"/>
                     <ellipse cx="48" cy="20" rx="12" ry="8" fill="#b19cd9" stroke="#7b68ee" stroke-width="1"/>
                     <ellipse cx="58" cy="20" rx="8" ry="6" fill="#dda0dd" stroke="#7b68ee" stroke-width="1"/>
                     <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#9370db" stroke="#7b68ee" stroke-width="1"/>
                     <circle cx="15" cy="17" r="3" fill="#000"/>
                     <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <circle cx="14" cy="17" r="0.5" fill="#fff" opacity="0.5"/>
                     <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#7b68ee" stroke-width="1.5" fill="none"/>
                     <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#7b68ee" stroke-width="1" fill="none"/>
                 </g>
             </svg>`),
             
+            // Shrimp 4 - Cyan/Teal
             'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#00ced1;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#afeeee;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
                 <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="url(#grad4)" stroke="#008b8b" stroke-width="1"/>
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#00ced1" stroke="#008b8b" stroke-width="1"/>
                     <ellipse cx="35" cy="20" rx="15" ry="10" fill="#40e0d0" stroke="#008b8b" stroke-width="1"/>
                     <ellipse cx="48" cy="20" rx="12" ry="8" fill="#48d1cc" stroke="#008b8b" stroke-width="1"/>
                     <ellipse cx="58" cy="20" rx="8" ry="6" fill="#afeeee" stroke="#008b8b" stroke-width="1"/>
                     <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#00ced1" stroke="#008b8b" stroke-width="1"/>
                     <circle cx="15" cy="17" r="3" fill="#000"/>
                     <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <circle cx="14" cy="17" r="0.5" fill="#fff" opacity="0.5"/>
                     <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#008b8b" stroke-width="1.5" fill="none"/>
                     <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#008b8b" stroke-width="1" fill="none"/>
                 </g>
             </svg>`),
             
+            // Shrimp 5 - Golden/Yellow
             'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#fffacd;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
                 <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="url(#grad5)" stroke="#daa520" stroke-width="1"/>
+                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ffd700" stroke="#daa520" stroke-width="1"/>
                     <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ffed4e" stroke="#daa520" stroke-width="1"/>
                     <ellipse cx="48" cy="20" rx="12" ry="8" fill="#fff68f" stroke="#daa520" stroke-width="1"/>
                     <ellipse cx="58" cy="20" rx="8" ry="6" fill="#fffacd" stroke="#daa520" stroke-width="1"/>
                     <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ffd700" stroke="#daa520" stroke-width="1"/>
                     <circle cx="15" cy="17" r="3" fill="#000"/>
                     <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <circle cx="14" cy="17" r="0.5" fill="#fff" opacity="0.5"/>
                     <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#daa520" stroke-width="1.5" fill="none"/>
                     <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#daa520" stroke-width="1" fill="none"/>
                 </g>
             </svg>`)
         ];
         
-        // Power-up cake sprite
-        const cakeSprite = 'data:image/svg+xml;base64,' + btoa(`<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
-            <rect x="5" y="20" width="30" height="15" fill="#f4a460" stroke="#8b4513" stroke-width="1"/>
-            <rect x="5" y="18" width="30" height="4" fill="#fff" stroke="#8b4513" stroke-width="1"/>
-            <rect x="17" y="10" width="6" height="10" fill="#ff69b4" stroke="#ff1493" stroke-width="1"/>
-            <ellipse cx="20" cy="8" rx="3" ry="4" fill="#ffa500" stroke="#ff8c00" stroke-width="1"/>
-            <circle cx="10" cy="28" r="2" fill="#ff69b4"/>
-            <circle cx="20" cy="28" r="2" fill="#87ceeb"/>
-            <circle cx="30" cy="28" r="2" fill="#98fb98"/>
+        // Fish sprite
+        const fishSprite = 'data:image/svg+xml;base64,' + btoa(`<svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+            <g>
+                <!-- Body -->
+                <ellipse cx="60" cy="30" rx="45" ry="25" fill="#2c3e50" stroke="#1a252f" stroke-width="2"/>
+                <!-- Tail -->
+                <path d="M15 30 L5 15 L0 30 L5 45 Z" fill="#2c3e50" stroke="#1a252f" stroke-width="2"/>
+                <!-- Fins -->
+                <path d="M60 15 Q50 5 45 10 M60 45 Q50 55 45 50" stroke="#1a252f" stroke-width="2" fill="#34495e"/>
+                <!-- Eye -->
+                <circle cx="85" cy="25" r="6" fill="#e74c3c"/>
+                <circle cx="87" cy="23" r="2" fill="#000"/>
+                <!-- Mouth -->
+                <path d="M100 30 Q105 35 100 40 L95 35 Z" fill="#c0392b"/>
+                <!-- Stripes -->
+                <path d="M40 10 Q40 30 40 50 M55 10 Q55 30 55 50 M70 10 Q70 30 70 50" stroke="#34495e" stroke-width="3" opacity="0.5"/>
+            </g>
         </svg>`);
         
-        // Enhanced Shrimp class
+        // Fish class
+        class Fish {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.angle = 0;
+                this.width = 120;
+                this.height = 60;
+                this.speed = 150;
+                this.target = null;
+                this.eating = false;
+                this.eatTimer = 0;
+                
+                this.element = document.createElement('img');
+                this.element.className = 'fish';
+                this.element.src = fishSprite;
+                document.body.appendChild(this.element);
+            }
+            
+            update(dt, shrimps) {
+                // Find nearest shrimp
+                let nearestShrimp = null;
+                let nearestDist = Infinity;
+                
+                shrimps.forEach(shrimp => {
+                    if (!shrimp.isDragging) {
+                        const dx = shrimp.x - this.x;
+                        const dy = shrimp.y - this.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < nearestDist) {
+                            nearestDist = dist;
+                            nearestShrimp = shrimp;
+                        }
+                    }
+                });
+                
+                this.target = nearestShrimp;
+                
+                if (this.target && !this.eating) {
+                    // Chase the nearest shrimp
+                    const dx = this.target.x - this.x;
+                    const dy = this.target.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist > 0) {
+                        // Accelerate towards target
+                        const targetVx = (dx / dist) * this.speed;
+                        const targetVy = (dy / dist) * this.speed;
+                        
+                        this.vx += (targetVx - this.vx) * 0.1;
+                        this.vy += (targetVy - this.vy) * 0.1;
+                        
+                        this.angle = Math.atan2(dy, dx);
+                    }
+                    
+                    // Check if caught shrimp
+                    if (dist < 40) {
+                        this.eating = true;
+                        this.eatTimer = 1.0;
+                        return this.target; // Return caught shrimp
+                    }
+                } else if (this.eating) {
+                    // Eating animation
+                    this.eatTimer -= dt;
+                    if (this.eatTimer <= 0) {
+                        this.eating = false;
+                    }
+                } else {
+                    // Wander if no target
+                    this.vx *= 0.95;
+                    this.vy *= 0.95;
+                }
+                
+                // Update position
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+                
+                // Keep fish on screen
+                this.x = Math.max(this.width/2, Math.min(window.innerWidth - this.width/2, this.x));
+                this.y = Math.max(this.height/2, Math.min(window.innerHeight - this.height/2, this.y));
+                
+                // Update visual
+                const scale = this.eating ? 1.2 : 1;
+                this.element.style.transform = `translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${scale})`;
+                
+                return null;
+            }
+            
+            scare(fx, fy) {
+                // Make fish swim away when phone is shaken
+                this.vx = -fx * 2;
+                this.vy = -fy * 2;
+            }
+            
+            destroy() {
+                this.element.remove();
+            }
+        }
+        
+        // Enhanced Shrimp class (same as before with minor additions)
         class Shrimp {
             constructor(x, y, spriteIndex) {
                 this.x = x;
@@ -391,8 +423,7 @@
                 this.swimTimer = Math.random() * Math.PI * 2;
                 this.isDragging = false;
                 this.touchId = null;
-                this.collisionCooldown = 0;
-                this.happiness = 1;
+                this.fleeSpeed = 300; // Speed when fleeing from fish
                 
                 this.element = document.createElement('img');
                 this.element.className = 'shrimp';
@@ -410,13 +441,11 @@
                 e.preventDefault();
                 const touch = e.touches[0];
                 this.startDrag(touch.identifier, touch.clientX, touch.clientY);
-                createParticles(touch.clientX, touch.clientY, 5);
             }
             
             handleMouseDown(e) {
                 e.preventDefault();
                 this.startDrag('mouse', e.clientX, e.clientY);
-                createParticles(e.clientX, e.clientY, 5);
             }
             
             startDrag(id, x, y) {
@@ -429,11 +458,6 @@
                 this.lastDragY = y;
                 this.element.style.cursor = 'grabbing';
                 this.element.style.zIndex = '100';
-                this.element.classList.add('dragging');
-                
-                // Happiness boost
-                this.happiness = Math.min(this.happiness + 0.2, 2);
-                updateScore(5);
             }
             
             handleDrag(x, y) {
@@ -449,11 +473,6 @@
                 
                 this.lastDragX = x;
                 this.lastDragY = y;
-                
-                // Create trail particles
-                if (Math.random() < 0.3) {
-                    createParticles(x, y, 1);
-                }
             }
             
             endDrag() {
@@ -465,42 +484,50 @@
                     Math.pow(this.lastDragY - this.dragStartY, 2)
                 );
                 
-                // Flick detection with enhanced effects
+                // Flick detection
                 if (dragTime < 200 && dragDistance > 30) {
                     const flickMultiplier = Math.min(dragDistance / 50, 3);
                     this.vx *= flickMultiplier;
                     this.vy *= flickMultiplier;
                     this.angularVelocity = (Math.random() - 0.5) * 20;
-                    
-                    // Flick bonus
-                    updateScore(20);
-                    createParticles(this.x, this.y, 10);
                 }
                 
                 this.isDragging = false;
                 this.touchId = null;
                 this.element.style.cursor = 'grab';
                 this.element.style.zIndex = '';
-                this.element.classList.remove('dragging');
             }
             
-            update(dt, gravity, damping) {
+            update(dt, gravity, damping, fish) {
                 if (this.isDragging) return;
                 
-                // Update cooldown
-                this.collisionCooldown = Math.max(0, this.collisionCooldown - dt);
+                // Flee from fish
+                if (fish && fish.target === this) {
+                    const dx = this.x - fish.x;
+                    const dy = this.y - fish.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 200 && dist > 0) {
+                        // Panic swim away
+                        const fleeX = (dx / dist) * this.fleeSpeed;
+                        const fleeY = (dy / dist) * this.fleeSpeed;
+                        this.vx += fleeX * dt;
+                        this.vy += fleeY * dt;
+                        this.angularVelocity = (Math.random() - 0.5) * 15;
+                    }
+                }
                 
-                // Natural swimming motion with happiness
-                this.swimTimer += dt * 3 * this.happiness;
-                const swimForce = Math.sin(this.swimTimer) * 20 * this.happiness;
+                // Natural swimming motion
+                this.swimTimer += dt * 3;
+                const swimForce = Math.sin(this.swimTimer) * 20;
                 
                 // Apply gravity with swimming motion
                 this.vx += (gravity.x * dt + Math.cos(this.angle) * swimForce * dt) / this.mass;
                 this.vy += (gravity.y * dt + Math.sin(this.angle) * swimForce * dt) / this.mass;
                 
-                // Add some random "wiggle" based on happiness
-                this.vx += (Math.random() - 0.5) * 50 * dt * this.happiness;
-                this.vy += (Math.random() - 0.5) * 50 * dt * this.happiness;
+                // Add some random "wiggle"
+                this.vx += (Math.random() - 0.5) * 50 * dt;
+                this.vy += (Math.random() - 0.5) * 50 * dt;
                 
                 // Apply damping
                 this.vx *= damping;
@@ -512,38 +539,31 @@
                 this.y += this.vy * dt;
                 this.angle += this.angularVelocity * dt;
                 
-                // Decay happiness
-                this.happiness = Math.max(1, this.happiness - dt * 0.1);
-                
-                // Bounce off walls with enhanced effects
+                // Bounce off walls with spin
                 if (this.x < this.width/2) {
                     this.x = this.width/2;
                     this.vx = Math.abs(this.vx) * this.bounciness;
                     this.angularVelocity = this.vx * 0.05;
-                    createBubbles(this.x, this.y, 3);
                 }
                 if (this.x > window.innerWidth - this.width/2) {
                     this.x = window.innerWidth - this.width/2;
                     this.vx = -Math.abs(this.vx) * this.bounciness;
                     this.angularVelocity = -this.vx * 0.05;
-                    createBubbles(this.x, this.y, 3);
                 }
                 if (this.y < this.height/2) {
                     this.y = this.height/2;
                     this.vy = Math.abs(this.vy) * this.bounciness;
                     this.angularVelocity += (Math.random() - 0.5) * 3;
-                    createBubbles(this.x, this.y, 3);
                 }
                 if (this.y > window.innerHeight - this.height/2) {
                     this.y = window.innerHeight - this.height/2;
                     this.vy = -Math.abs(this.vy) * this.bounciness;
                     this.angularVelocity += (Math.random() - 0.5) * 3;
-                    createBubbles(this.x, this.y, 3);
                 }
                 
-                // Update visual position with enhanced scale effect
+                // Update visual position with scale effect based on velocity
                 const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                const scale = (1 + Math.min(speed / 500, 0.3)) * (0.9 + this.happiness * 0.1);
+                const scale = 1 + Math.min(speed / 500, 0.3);
                 this.element.style.transform = `translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${scale})`;
             }
             
@@ -551,27 +571,16 @@
                 this.vx += fx / this.mass;
                 this.vy += fy / this.mass;
                 this.angularVelocity += (Math.random() - 0.5) * 10;
-                this.happiness = Math.min(this.happiness + 0.3, 2);
             }
             
             checkCollision(other) {
-                if (this.collisionCooldown > 0 || other.collisionCooldown > 0) return;
-                
                 const dx = this.x - other.x;
                 const dy = this.y - other.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                const minDistance = (this.width + other.width) * 0.6;
+                const minDistance = (this.width + other.width) * 0.7;
                 
                 if (distance < minDistance && distance > 0) {
-                    // Collision cooldown
-                    this.collisionCooldown = 0.5;
-                    other.collisionCooldown = 0.5;
-                    
-                    // Collision effects
-                    createParticles((this.x + other.x) / 2, (this.y + other.y) / 2, 8);
-                    updateScore(10);
-                    
-                    // Physics calculation
+                    // More realistic collision with mass
                     const angle = Math.atan2(dy, dx);
                     const sin = Math.sin(angle);
                     const cos = Math.cos(angle);
@@ -601,11 +610,9 @@
                     other.x -= separateX;
                     other.y -= separateY;
                     
-                    // Add spin and happiness
+                    // Add spin
                     this.angularVelocity += (Math.random() - 0.5) * 8;
                     other.angularVelocity += (Math.random() - 0.5) * 8;
-                    this.happiness = Math.min(this.happiness + 0.1, 2);
-                    other.happiness = Math.min(other.happiness + 0.1, 2);
                 }
             }
             
@@ -614,259 +621,126 @@
             }
         }
         
-        // Power-up class
-        class PowerUp {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.element = document.createElement('img');
-                this.element.className = 'power-up';
-                this.element.src = cakeSprite;
-                this.element.style.left = x - 20 + 'px';
-                this.element.style.top = y - 20 + 'px';
-                document.body.appendChild(this.element);
-                
-                this.element.addEventListener('click', () => this.collect());
-                this.element.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.collect();
-                });
-                
-                // Auto-remove after 10 seconds
-                setTimeout(() => this.destroy(), 10000);
-            }
-            
-            collect() {
-                createParticles(this.x, this.y, 20);
-                updateScore(100);
-                addShrimpSpecies();
-                
-                // Party mode - add multiple shrimp
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => {
-                        addShrimp(this.x, this.y);
-                    }, i * 100);
-                }
-                
-                this.destroy();
-            }
-            
-            destroy() {
-                if (this.element.parentNode) {
-                    this.element.remove();
-                }
-            }
-        }
-        
-        // Particle effects
-        function createParticles(x, y, count) {
-            for (let i = 0; i < count; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-                const velocity = 30 + Math.random() * 30;
-                particle.style.setProperty('--dx', Math.cos(angle) * velocity + 'px');
-                particle.style.setProperty('--dy', Math.sin(angle) * velocity + 'px');
-                
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 1000);
-            }
-        }
-        
-        // Bubble effects
-        function createBubbles(x, y, count) {
-            for (let i = 0; i < count; i++) {
-                setTimeout(() => {
-                    const bubble = document.createElement('div');
-                    bubble.className = 'bubble';
-                    const size = 10 + Math.random() * 20;
-                    bubble.style.width = size + 'px';
-                    bubble.style.height = size + 'px';
-                    bubble.style.left = (x + (Math.random() - 0.5) * 40) + 'px';
-                    bubble.style.top = y + 'px';
-                    
-                    document.body.appendChild(bubble);
-                    setTimeout(() => bubble.remove(), 3000);
-                }, i * 100);
-            }
-        }
-        
-        // Score system
-        let score = 0;
-        function updateScore(points) {
-            score += points;
-            document.getElementById('scoreValue').textContent = score;
-        }
-        
-        // Game variables
         let shrimps = [];
+        let fish = null;
         let currentShrimpIndex = 0;
         let lastShakeTime = 0;
         let shakeCount = 0;
         let gravity = { x: 0, y: 100 };
         let lastTime = performance.now();
         let animationId = null;
-        let prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
+        let prefersReducedMotion = false;
+        let fishSpawnTimer = 0;
+        let dangerAlertTimeout = null;
         
-        // Canvas setup for background effects
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        // Check for reduced motion preference
+        if (window.matchMedia) {
+            prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         }
         
-        // Background animation
-        function drawBackground() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw subtle waves
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 2;
-            
-            for (let i = 0; i < 5; i++) {
-                ctx.beginPath();
-                const offset = Date.now() * 0.001 + i * 0.5;
-                for (let x = 0; x < canvas.width; x += 10) {
-                    const y = canvas.height / 2 + Math.sin((x * 0.01) + offset) * 50 + i * 20;
-                    if (x === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
+        // Update shrimp counter
+        function updateShrimpCount() {
+            document.getElementById('shrimp-count').textContent = shrimps.length;
+        }
+        
+        // Request motion permission and initialize
+        async function requestMotion() {
+            try {
+                if (typeof DeviceMotionEvent?.requestPermission === 'function') {
+                    const res = await DeviceMotionEvent.requestPermission();
+                    if (res === 'granted') {
+                        init();
+                    } else {
+                        console.log('Motion permission denied, using fixed gravity');
+                        init();
+                    }
+                } else {
+                    // Desktop or Android
+                    init();
                 }
-                ctx.stroke();
+            } catch (err) {
+                console.error('Error requesting motion permission:', err);
+                init();
             }
         }
         
         // Initialize
-        async function init() {
-            document.getElementById('gate').style.display = 'none';
+        function init() {
+            document.getElementById('gate').remove();
             document.getElementById('birthday-message').style.display = 'block';
-            document.getElementById('score').style.display = 'block';
+            document.getElementById('shrimp-counter').style.display = 'block';
             
-            resizeCanvas();
+            // Canvas for background effects only
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
             
-            // Add initial shrimp with staggered animation
-            for (let i = 0; i < 5; i++) {
+            // Add initial shrimp with variety - random positions
+            for (let i = 0; i < 8; i++) {
+                currentShrimpIndex = i;
                 setTimeout(() => {
-                    currentShrimpIndex = i;
-                    const angle = (Math.PI * 2 * i) / 5;
-                    const centerX = window.innerWidth / 2;
-                    const centerY = window.innerHeight / 2;
-                    const radius = 100;
-                    
                     addShrimp(
-                        centerX + Math.cos(angle) * radius,
-                        centerY + Math.sin(angle) * radius
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
                     );
-                    
-                    createParticles(
-                        centerX + Math.cos(angle) * radius,
-                        centerY + Math.sin(angle) * radius,
-                        5
-                    );
-                }, i * 200);
+                }, i * 150);
             }
             
-            // Spawn power-ups periodically
-            setInterval(() => {
-                if (Math.random() < 0.3 && shrimps.length < 50) {
-                    new PowerUp(
-                        Math.random() * (window.innerWidth - 80) + 40,
-                        Math.random() * (window.innerHeight - 80) + 40
-                    );
-                }
-            }, 8000);
+            // Set timer to spawn fish
+            fishSpawnTimer = 5 + Math.random() * 5; // Spawn fish after 5-10 seconds
             
-            // Setup event handlers
+            // Handle device motion
             if (!prefersReducedMotion) {
                 window.addEventListener('devicemotion', handleMotion);
             }
             
+            // Touch/mouse event handlers
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
             document.addEventListener('touchend', handleTouchEnd);
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
-            window.addEventListener('resize', () => {
-                resizeCanvas();
-            });
             
-            // Double tap to add shrimp
-            let lastTapTime = 0;
-            document.addEventListener('touchstart', (e) => {
-                if (e.target === document.body) {
-                    const now = Date.now();
-                    if (now - lastTapTime < 300) {
-                        addShrimp(e.touches[0].clientX, e.touches[0].clientY);
-                        createParticles(e.touches[0].clientX, e.touches[0].clientY, 15);
-                        updateScore(25);
-                    }
-                    lastTapTime = now;
-                }
-            });
+            // Handle window resize
+            window.addEventListener('resize', handleResize);
             
+            // Start animation loop
             animate();
         }
         
         // Add a new shrimp
         function addShrimp(x, y) {
-            if (shrimps.length >= 100) return; // Limit for performance
-            
             const shrimp = new Shrimp(
                 x || Math.random() * window.innerWidth,
                 y || Math.random() * window.innerHeight / 2,
                 currentShrimpIndex % shrimpSprites.length
             );
             shrimps.push(shrimp);
-            
-            document.getElementById('shrimpCount').textContent = shrimps.length;
+            updateShrimpCount();
         }
         
-        // Add new shrimp species
+        // Add new shrimp species with burst effect
         function addShrimpSpecies() {
             currentShrimpIndex++;
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
             
-            // Create a festive burst
-            for (let i = 0; i < 8; i++) {
+            // Create a burst of shrimp
+            for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
-                    const angle = (Math.PI * 2 * i) / 8;
-                    const distance = 100;
-                    const x = centerX + Math.cos(angle) * distance;
-                    const y = centerY + Math.sin(angle) * distance;
-                    
-                    addShrimp(x, y);
+                    const angle = (Math.PI * 2 * i) / 5;
+                    const distance = 50;
+                    addShrimp(
+                        centerX + Math.cos(angle) * distance,
+                        centerY + Math.sin(angle) * distance
+                    );
                     
                     // Give them outward velocity
                     const newShrimp = shrimps[shrimps.length - 1];
-                    newShrimp.vx = Math.cos(angle) * 200;
-                    newShrimp.vy = Math.sin(angle) * 200;
-                    newShrimp.angularVelocity = (Math.random() - 0.5) * 15;
-                    
-                    createParticles(x, y, 5);
+                    newShrimp.vx = Math.cos(angle) * 300;
+                    newShrimp.vy = Math.sin(angle) * 300;
                 }, i * 50);
             }
-            
-            // Celebration message
-            const msg = document.createElement('div');
-            msg.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 3rem;
-                color: white;
-                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-                pointer-events: none;
-                z-index: 1000;
-                animation: shakeMessage 1s ease-out forwards;
-            `;
-            msg.textContent = '🦐 NEW SPECIES! 🦐';
-            document.body.appendChild(msg);
-            setTimeout(() => msg.remove(), 2000);
         }
         
         // Animation loop
@@ -875,14 +749,56 @@
             const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
             lastTime = currentTime;
             
-            // Draw background
-            drawBackground();
-            
             const damping = prefersReducedMotion ? 0.95 : 0.985;
+            
+            // Fish spawn timer
+            if (!fish && fishSpawnTimer > 0) {
+                fishSpawnTimer -= dt;
+                if (fishSpawnTimer <= 0 && shrimps.length > 3) {
+                    // Spawn fish at edge of screen
+                    const side = Math.floor(Math.random() * 4);
+                    let x, y;
+                    switch(side) {
+                        case 0: x = -60; y = Math.random() * window.innerHeight; break;
+                        case 1: x = window.innerWidth + 60; y = Math.random() * window.innerHeight; break;
+                        case 2: x = Math.random() * window.innerWidth; y = -30; break;
+                        case 3: x = Math.random() * window.innerWidth; y = window.innerHeight + 30; break;
+                    }
+                    fish = new Fish(x, y);
+                    
+                    // Show danger alert
+                    document.getElementById('danger-alert').style.display = 'block';
+                    clearTimeout(dangerAlertTimeout);
+                    dangerAlertTimeout = setTimeout(() => {
+                        document.getElementById('danger-alert').style.display = 'none';
+                    }, 3000);
+                }
+            }
+            
+            // Update fish
+            if (fish) {
+                const caughtShrimp = fish.update(dt, shrimps);
+                if (caughtShrimp) {
+                    // Remove eaten shrimp
+                    const index = shrimps.indexOf(caughtShrimp);
+                    if (index > -1) {
+                        shrimps.splice(index, 1);
+                        caughtShrimp.destroy();
+                        updateShrimpCount();
+                        
+                        // If too few shrimp, make fish leave
+                        if (shrimps.length < 2) {
+                            fish.destroy();
+                            fish = null;
+                            fishSpawnTimer = 10 + Math.random() * 10; // Wait longer before next fish
+                        }
+                    }
+                }
+            }
             
             // Update shrimp
             for (let i = 0; i < shrimps.length; i++) {
-                shrimps[i].update(dt, gravity, damping);
+                shrimps[i].update(dt, gravity, damping, fish);
                 
                 // Check collisions
                 for (let j = i + 1; j < shrimps.length; j++) {
@@ -931,8 +847,8 @@
             });
         }
         
-        // Enhanced shake detection
-        const SHAKE_THRESHOLD = 15;
+        // Handle device motion with shake message
+        const SHAKE_THRESHOLD = 15; // m/s²
         let shakeMessageTimeout;
         
         function handleMotion(event) {
@@ -941,7 +857,7 @@
             const { x, y, z } = event.accelerationIncludingGravity;
             const magnitude = Math.sqrt(x * x + y * y + z * z);
             
-            // Update gravity
+            // Update gravity based on device orientation
             gravity.x = x * 10;
             gravity.y = -y * 10;
             
@@ -960,26 +876,20 @@
                         shakeMsg.style.display = 'none';
                     }, 1500);
                     
-                    // Shake effects
+                    // Apply force to all shrimp
                     shrimps.forEach(shrimp => {
                         shrimp.applyForce(
-                            (Math.random() - 0.5) * 200,
-                            (Math.random() - 0.5) * 200
+                            (Math.random() - 0.5) * 300,
+                            (Math.random() - 0.5) * 300
                         );
                     });
                     
-                    // Create shake particles
-                    for (let i = 0; i < 20; i++) {
-                        createParticles(
-                            Math.random() * window.innerWidth,
-                            Math.random() * window.innerHeight,
-                            1
-                        );
+                    // Scare the fish away
+                    if (fish) {
+                        fish.scare(x * 50, y * 50);
                     }
                     
-                    updateScore(50);
-                    
-                    // Double shake bonus
+                    // Double shake detection
                     if (shakeCount % 2 === 0) {
                         addShrimpSpecies();
                     }
@@ -987,27 +897,14 @@
             }
         }
         
-        // Request motion permission
-        async function requestMotion() {
-            try {
-                if (typeof DeviceMotionEvent?.requestPermission === 'function') {
-                    const res = await DeviceMotionEvent.requestPermission();
-                    if (res === 'granted') {
-                        init();
-                    } else {
-                        console.log('Motion permission denied');
-                        init();
-                    }
-                } else {
-                    init();
-                }
-            } catch (err) {
-                console.error('Error requesting motion permission:', err);
-                init();
-            }
+        // Handle window resize
+        function handleResize() {
+            const canvas = document.getElementById('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
         
-        // Start button handler
+        // Attach start button listener
         document.getElementById('startBtn').addEventListener('click', requestMotion);
     </script>
 </body>
