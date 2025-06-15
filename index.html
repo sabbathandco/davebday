@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>🦐 Happy Birthday David Buivid! 🎉</title>
     <style>
         * {
@@ -18,47 +19,12 @@
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            transition: background 1s ease;
-        }
-        
-        body.sand-mode {
-            background: linear-gradient(180deg, 
-                #ff6b6b 0%, 
-                #feca57 20%, 
-                #ff9ff3 40%, 
-                #54a0ff 60%, 
-                #48dbfb 80%, 
-                #0abde3 100%);
-            background-size: 100% 300%;
-            animation: sunsetFlow 20s ease infinite;
-        }
-        
-        @keyframes sunsetFlow {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 0% 100%; }
-            100% { background-position: 0% 0%; }
         }
         
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
-        }
-        
-        #water-overlay {
-            position: fixed;
-            inset: 0;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s ease;
-            background: linear-gradient(180deg, 
-                rgba(0,119,190,0.3) 0%, 
-                rgba(0,68,119,0.5) 50%, 
-                rgba(0,34,68,0.7) 100%);
-        }
-        
-        body.koi-mode #water-overlay {
-            opacity: 1;
         }
         
         #gate {
@@ -96,15 +62,6 @@
             transform: scale(0.95);
         }
         
-        #canvas {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
         #birthday-message {
             position: absolute;
             top: 20px;
@@ -122,90 +79,13 @@
             margin-bottom: 0.5rem;
         }
         
-        #birthday-message p {
-            font-size: 1.2rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
-        
-        #shake-message {
+        .shrimp {
             position: absolute;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 3rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
-            animation: shake-text 0.5s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: 10;
-            display: none;
-        }
-        
-        @keyframes shake-text {
-            0% { transform: translateX(-50%) rotate(-5deg) scale(1); }
-            100% { transform: translateX(-50%) rotate(5deg) scale(1.1); }
-        }
-        
-        #mode-indicator {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        #mode-indicator.show {
-            opacity: 1;
-        }
-        
-        .creature {
-            position: absolute;
+            width: 80px;
+            height: 40px;
             transform-origin: center;
             will-change: transform;
             cursor: grab;
-        }
-        
-        .ripple {
-            position: absolute;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: ripple-expand 1.5s ease-out forwards;
-            pointer-events: none;
-        }
-        
-        @keyframes ripple-expand {
-            0% {
-                width: 0;
-                height: 0;
-                opacity: 1;
-            }
-            100% {
-                width: 200px;
-                height: 200px;
-                opacity: 0;
-            }
-        }
-        
-        .splash {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            pointer-events: none;
         }
         
         @media (prefers-reduced-motion: reduce) {
@@ -216,268 +96,54 @@
     </style>
 </head>
 <body>
-    <div id="water-overlay"></div>
-    
     <div id="gate">
         <h1>🦐 Happy Birthday David Buivid! 🦐</h1>
-        <button id="startBtn">Tap to start the party 🎉</button>
+        <button id="startBtn">Tap to start the shrimp party 🦐🎉</button>
     </div>
     
     <div id="birthday-message" style="display: none;">
         <h1>🎉 Happy Birthday David! 🎉</h1>
-        <p>Tap & flick the creatures!</p>
+        <p>Tap & flick the shrimp!</p>
     </div>
-    
-    <div id="shake-message" style="display: none;">
-        🦐 SHAKE IT UP! 🦐
-    </div>
-    
-    <div id="mode-indicator"></div>
-    
-    <canvas id="canvas"></canvas>
     
     <script>
+        console.log('Script starting...');
+        
         // Shrimp sprites
         const shrimpSprites = [
-            'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
-                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff7745" stroke="#d64545" stroke-width="1"/>
-                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#ff8855" stroke="#d64545" stroke-width="1"/>
-                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#ff9965" stroke="#d64545" stroke-width="1"/>
-                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
-                    <circle cx="15" cy="17" r="3" fill="#000"/>
-                    <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#d64545" stroke-width="1.5" fill="none"/>
-                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#d64545" stroke-width="1" fill="none"/>
-                </g>
-            </svg>`),
-            'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff1493" stroke="#c71585" stroke-width="1"/>
-                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff69b4" stroke="#c71585" stroke-width="1"/>
-                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#ffb6c1" stroke="#c71585" stroke-width="1"/>
-                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#ffc0cb" stroke="#c71585" stroke-width="1"/>
-                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff1493" stroke="#c71585" stroke-width="1"/>
-                    <circle cx="15" cy="17" r="3" fill="#000"/>
-                    <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#c71585" stroke-width="1.5" fill="none"/>
-                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#c71585" stroke-width="1" fill="none"/>
-                </g>
-            </svg>`)
+            'data:image/svg+xml;base64,' + btoa('<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(-10 40 20)"><ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff6b35" stroke="#d64545" stroke-width="1"/><ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff7745" stroke="#d64545" stroke-width="1"/><ellipse cx="48" cy="20" rx="12" ry="8" fill="#ff8855" stroke="#d64545" stroke-width="1"/><ellipse cx="58" cy="20" rx="8" ry="6" fill="#ff9965" stroke="#d64545" stroke-width="1"/><path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff6b35" stroke="#d64545" stroke-width="1"/><circle cx="15" cy="17" r="3" fill="#000"/><circle cx="16" cy="16" r="1" fill="#fff"/><path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#d64545" stroke-width="1.5" fill="none"/><path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#d64545" stroke-width="1" fill="none"/></g></svg>'),
+            'data:image/svg+xml;base64,' + btoa('<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(-10 40 20)"><ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff1493" stroke="#c71585" stroke-width="1"/><ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff69b4" stroke="#c71585" stroke-width="1"/><ellipse cx="48" cy="20" rx="12" ry="8" fill="#ffb6c1" stroke="#c71585" stroke-width="1"/><ellipse cx="58" cy="20" rx="8" ry="6" fill="#ffc0cb" stroke="#c71585" stroke-width="1"/><path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff1493" stroke="#c71585" stroke-width="1"/><circle cx="15" cy="17" r="3" fill="#000"/><circle cx="16" cy="16" r="1" fill="#fff"/><path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#c71585" stroke-width="1.5" fill="none"/><path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#c71585" stroke-width="1" fill="none"/></g></svg>'),
+            'data:image/svg+xml;base64,' + btoa('<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(-10 40 20)"><ellipse cx="20" cy="20" rx="18" ry="12" fill="#9370db" stroke="#7b68ee" stroke-width="1"/><ellipse cx="35" cy="20" rx="15" ry="10" fill="#a58fe9" stroke="#7b68ee" stroke-width="1"/><ellipse cx="48" cy="20" rx="12" ry="8" fill="#b19cd9" stroke="#7b68ee" stroke-width="1"/><ellipse cx="58" cy="20" rx="8" ry="6" fill="#dda0dd" stroke="#7b68ee" stroke-width="1"/><path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#9370db" stroke="#7b68ee" stroke-width="1"/><circle cx="15" cy="17" r="3" fill="#000"/><circle cx="16" cy="16" r="1" fill="#fff"/><path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#7b68ee" stroke-width="1.5" fill="none"/><path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#7b68ee" stroke-width="1" fill="none"/></g></svg>'),
+            'data:image/svg+xml;base64,' + btoa('<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(-10 40 20)"><ellipse cx="20" cy="20" rx="18" ry="12" fill="#00ced1" stroke="#008b8b" stroke-width="1"/><ellipse cx="35" cy="20" rx="15" ry="10" fill="#40e0d0" stroke="#008b8b" stroke-width="1"/><ellipse cx="48" cy="20" rx="12" ry="8" fill="#48d1cc" stroke="#008b8b" stroke-width="1"/><ellipse cx="58" cy="20" rx="8" ry="6" fill="#afeeee" stroke="#008b8b" stroke-width="1"/><path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#00ced1" stroke="#008b8b" stroke-width="1"/><circle cx="15" cy="17" r="3" fill="#000"/><circle cx="16" cy="16" r="1" fill="#fff"/><path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#008b8b" stroke-width="1.5" fill="none"/><path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#008b8b" stroke-width="1" fill="none"/></g></svg>'),
+            'data:image/svg+xml;base64,' + btoa('<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(-10 40 20)"><ellipse cx="20" cy="20" rx="18" ry="12" fill="#ffd700" stroke="#daa520" stroke-width="1"/><ellipse cx="35" cy="20" rx="15" ry="10" fill="#ffed4e" stroke="#daa520" stroke-width="1"/><ellipse cx="48" cy="20" rx="12" ry="8" fill="#fff68f" stroke="#daa520" stroke-width="1"/><ellipse cx="58" cy="20" rx="8" ry="6" fill="#fffacd" stroke="#daa520" stroke-width="1"/><path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ffd700" stroke="#daa520" stroke-width="1"/><circle cx="15" cy="17" r="3" fill="#000"/><circle cx="16" cy="16" r="1" fill="#fff"/><path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#daa520" stroke-width="1.5" fill="none"/><path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#daa520" stroke-width="1" fill="none"/></g></svg>')
         ];
         
-        // Koi sprites
-        const koiSprites = [
-            '#ff6b6b', // Coral red
-            '#feca57', // Golden yellow
-            '#ff9ff3', // Rose pink
-            '#ee5a6f', // Deep coral
-            '#f368e0', // Magenta
-            '#ffa502', // Orange
-            '#ff7675', // Light red
-            '#fdcb6e', // Light gold
-            '#6c5ce7', // Purple
-            '#74b9ff', // Sky blue
-            '#a29bfe', // Lavender
-            '#fd79a8'  // Pink
-        ];
+        console.log('Sprites loaded:', shrimpSprites.length);
         
-        // Sand particle class
-        class SandParticle {
-            constructor(x, y, colorIndex) {
+        // Shrimp class
+        class Shrimp {
+            constructor(x, y, spriteIndex) {
                 this.x = x;
                 this.y = y;
-                this.vx = (Math.random() - 0.5) * 50;
-                this.vy = (Math.random() - 0.5) * 50;
-                this.size = 15 + Math.random() * 35;
-                this.mass = this.size / 30;
-                this.color = sandColors[colorIndex % sandColors.length];
-                this.opacity = 0.6 + Math.random() * 0.4;
-                
-                this.element = document.createElement('div');
-                this.element.className = 'sand-particle';
-                this.element.style.width = this.size + 'px';
-                this.element.style.height = this.size + 'px';
-                this.element.style.background = `radial-gradient(circle, ${this.color} 0%, ${this.color}88 70%, ${this.color}00 100%)`;
-                this.element.style.opacity = this.opacity;
-                document.body.appendChild(this.element);
-                
-                this.isDragging = false;
-                this.touchId = null;
-                
-                this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-                this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
-            }
-            
-            handleTouchStart(e) {
-                e.preventDefault();
-                const touch = e.touches[0];
-                this.startDrag(touch.identifier, touch.clientX, touch.clientY);
-            }
-            
-            handleMouseDown(e) {
-                e.preventDefault();
-                this.startDrag('mouse', e.clientX, e.clientY);
-            }
-            
-            startDrag(id, x, y) {
-                this.isDragging = true;
-                this.touchId = id;
-                this.lastDragX = x;
-                this.lastDragY = y;
-                this.element.style.cursor = 'grabbing';
-                this.element.style.zIndex = '100';
-            }
-            
-            handleDrag(x, y) {
-                if (!this.isDragging) return;
-                
-                const dx = x - this.lastDragX;
-                const dy = y - this.lastDragY;
-                
-                this.x = x;
-                this.y = y;
-                this.vx = dx * 5;
-                this.vy = dy * 5;
-                
-                this.lastDragX = x;
-                this.lastDragY = y;
-            }
-            
-            endDrag() {
-                if (!this.isDragging) return;
-                this.isDragging = false;
-                this.touchId = null;
-                this.element.style.cursor = 'grab';
-                this.element.style.zIndex = '';
-            }
-            
-            update(dt, gravity, damping) {
-                if (this.isDragging) return;
-                
-                // Liquid physics with viscosity
-                this.vx += gravity.x * dt / this.mass;
-                this.vy += gravity.y * dt / this.mass;
-                
-                // High damping for liquid feel
-                this.vx *= 0.92;
-                this.vy *= 0.92;
-                
-                this.x += this.vx * dt;
-                this.y += this.vy * dt;
-                
-                // Soft boundaries
-                const padding = this.size / 2;
-                if (this.x < padding) {
-                    this.x = padding;
-                    this.vx *= -0.5;
-                }
-                if (this.x > window.innerWidth - padding) {
-                    this.x = window.innerWidth - padding;
-                    this.vx *= -0.5;
-                }
-                if (this.y < padding) {
-                    this.y = padding;
-                    this.vy *= -0.5;
-                }
-                if (this.y > window.innerHeight - padding) {
-                    this.y = window.innerHeight - padding;
-                    this.vy *= -0.5;
-                }
-                
-                this.element.style.transform = `translate(${this.x - this.size/2}px, ${this.y - this.size/2}px)`;
-            }
-            
-            checkLiquidInteraction(other) {
-                const dx = this.x - other.x;
-                const dy = this.y - other.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const minDistance = (this.size + other.size) * 0.8;
-                
-                if (distance < minDistance && distance > 0) {
-                    // Soft liquid-like repulsion
-                    const force = (minDistance - distance) / minDistance * 0.5;
-                    const fx = (dx / distance) * force * 50;
-                    const fy = (dy / distance) * force * 50;
-                    
-                    this.vx += fx / this.mass;
-                    this.vy += fy / this.mass;
-                    other.vx -= fx / other.mass;
-                    other.vy -= fy / other.mass;
-                }
-            }
-            
-            destroy() {
-                this.element.remove();
-            }
-        }
-            'data:image/svg+xml;base64,' + btoa(`<svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="koiGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#fff;stop-opacity:1" />
-                        <stop offset="50%" style="stop-color:#ff6b35;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#d64545;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-                <ellipse cx="60" cy="30" rx="45" ry="20" fill="url(#koiGrad1)" stroke="#333" stroke-width="1"/>
-                <ellipse cx="80" cy="30" rx="25" ry="15" fill="#ff6b35" opacity="0.7"/>
-                <path d="M15 30 Q5 20 0 15 M15 30 Q5 40 0 45" stroke="#333" stroke-width="2" fill="none"/>
-                <path d="M105 30 L115 20 L120 30 L115 40 Z" fill="#ff6b35" stroke="#333" stroke-width="1"/>
-                <circle cx="30" cy="25" r="4" fill="#000"/>
-                <circle cx="31" cy="24" r="2" fill="#fff"/>
-                <path d="M40 10 Q45 5 48 3 M50 8 Q55 4 58 2" stroke="#333" stroke-width="1" fill="none"/>
-            </svg>`),
-            'data:image/svg+xml;base64,' + btoa(`<svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="koiGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#000;stop-opacity:1" />
-                        <stop offset="50%" style="stop-color:#333;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#666;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-                <ellipse cx="60" cy="30" rx="45" ry="20" fill="url(#koiGrad2)" stroke="#000" stroke-width="1"/>
-                <ellipse cx="40" cy="30" rx="15" ry="10" fill="#fff" opacity="0.8"/>
-                <ellipse cx="80" cy="30" rx="15" ry="10" fill="#fff" opacity="0.8"/>
-                <path d="M15 30 Q5 20 0 15 M15 30 Q5 40 0 45" stroke="#000" stroke-width="2" fill="none"/>
-                <path d="M105 30 L115 20 L120 30 L115 40 Z" fill="#333" stroke="#000" stroke-width="1"/>
-                <circle cx="30" cy="25" r="4" fill="#000"/>
-                <circle cx="31" cy="24" r="2" fill="#fff"/>
-                <path d="M40 10 Q45 5 48 3 M50 8 Q55 4 58 2" stroke="#000" stroke-width="1" fill="none"/>
-            </svg>`)
-        ];
-        
-        // Creature class (works for both shrimp and koi)
-        class Creature {
-            constructor(x, y, type, spriteIndex) {
-                this.x = x;
-                this.y = y;
-                this.type = type;
-                this.vx = (Math.random() - 0.5) * (type === 'shrimp' ? 200 : 100);
-                this.vy = (Math.random() - 0.5) * (type === 'shrimp' ? 200 : 100);
+                this.vx = (Math.random() - 0.5) * 200;
+                this.vy = (Math.random() - 0.5) * 200;
                 this.angle = Math.random() * Math.PI * 2;
-                this.angularVelocity = (Math.random() - 0.5) * (type === 'shrimp' ? 5 : 2);
+                this.angularVelocity = (Math.random() - 0.5) * 5;
                 this.spriteIndex = spriteIndex;
-                this.width = type === 'shrimp' ? 80 : 120;
-                this.height = type === 'shrimp' ? 40 : 60;
+                this.width = 80;
+                this.height = 40;
                 this.bounciness = 0.85 + Math.random() * 0.1;
-                this.mass = type === 'shrimp' ? (0.8 + Math.random() * 0.4) : (1.5 + Math.random() * 0.5);
+                this.mass = 0.8 + Math.random() * 0.4;
                 this.swimTimer = Math.random() * Math.PI * 2;
                 this.isDragging = false;
                 this.touchId = null;
                 
                 this.element = document.createElement('img');
-                this.element.className = 'creature';
-                const sprites = type === 'shrimp' ? shrimpSprites : koiSprites;
-                this.element.src = sprites[spriteIndex % sprites.length];
-                
-                if (type === 'shrimp') {
-                    this.element.style.filter = `hue-rotate(${Math.random() * 30 - 15}deg) brightness(${0.9 + Math.random() * 0.2})`;
-                }
-                
+                this.element.className = 'shrimp';
+                this.element.src = shrimpSprites[spriteIndex % shrimpSprites.length];
+                this.element.style.filter = `hue-rotate(${Math.random() * 30 - 15}deg) brightness(${0.9 + Math.random() * 0.2})`;
                 document.body.appendChild(this.element);
                 
-                // Touch/mouse handlers
                 this.element.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
                 this.element.addEventListener('mousedown', this.handleMouseDown.bind(this));
             }
@@ -529,17 +195,11 @@
                     Math.pow(this.lastDragY - this.dragStartY, 2)
                 );
                 
-                // Flick detection
                 if (dragTime < 200 && dragDistance > 30) {
                     const flickMultiplier = Math.min(dragDistance / 50, 3);
                     this.vx *= flickMultiplier;
                     this.vy *= flickMultiplier;
                     this.angularVelocity = (Math.random() - 0.5) * 20;
-                    
-                    // Create splash if koi
-                    if (this.type === 'koi' && currentMode === 'koi') {
-                        createSplash(this.x, this.y, Math.abs(this.vx) + Math.abs(this.vy));
-                    }
                 }
                 
                 this.isDragging = false;
@@ -551,58 +211,44 @@
             update(dt, gravity, damping) {
                 if (this.isDragging) return;
                 
-                // Natural swimming motion
-                this.swimTimer += dt * (this.type === 'shrimp' ? 3 : 1.5);
-                const swimForce = Math.sin(this.swimTimer) * (this.type === 'shrimp' ? 20 : 10);
+                this.swimTimer += dt * 3;
+                const swimForce = Math.sin(this.swimTimer) * 20;
                 
-                // More responsive to gravity - increased multiplier
-                const gravityMultiplier = this.type === 'shrimp' ? 2.5 : 1.5;
-                this.vx += (gravity.x * gravityMultiplier * dt + Math.cos(this.angle) * swimForce * dt) / this.mass;
-                this.vy += (gravity.y * gravityMultiplier * dt + Math.sin(this.angle) * swimForce * dt) / this.mass;
+                this.vx += (gravity.x * 2.5 * dt + Math.cos(this.angle) * swimForce * dt) / this.mass;
+                this.vy += (gravity.y * 2.5 * dt + Math.sin(this.angle) * swimForce * dt) / this.mass;
                 
-                // Add some random "wiggle"
-                const wiggleFactor = this.type === 'shrimp' ? 50 : 20;
-                this.vx += (Math.random() - 0.5) * wiggleFactor * dt;
-                this.vy += (Math.random() - 0.5) * wiggleFactor * dt;
+                this.vx += (Math.random() - 0.5) * 50 * dt;
+                this.vy += (Math.random() - 0.5) * 50 * dt;
                 
-                // Apply damping (less damping for more responsive movement)
-                const actualDamping = this.type === 'koi' ? damping * 0.98 : damping;
-                this.vx *= actualDamping;
-                this.vy *= actualDamping;
-                this.angularVelocity *= actualDamping;
+                this.vx *= damping;
+                this.vy *= damping;
+                this.angularVelocity *= damping;
                 
-                // Update position
                 this.x += this.vx * dt;
                 this.y += this.vy * dt;
                 this.angle += this.angularVelocity * dt;
                 
-                // Bounce off walls - only create ripples for significant impacts
                 if (this.x < this.width/2) {
                     this.x = this.width/2;
                     this.vx = Math.abs(this.vx) * this.bounciness;
                     this.angularVelocity = this.vx * 0.05;
-                    if (this.type === 'koi' && Math.abs(this.vx) > 100) createRipple(this.x, this.y);
                 }
                 if (this.x > window.innerWidth - this.width/2) {
                     this.x = window.innerWidth - this.width/2;
                     this.vx = -Math.abs(this.vx) * this.bounciness;
                     this.angularVelocity = -this.vx * 0.05;
-                    if (this.type === 'koi' && Math.abs(this.vx) > 100) createRipple(this.x, this.y);
                 }
                 if (this.y < this.height/2) {
                     this.y = this.height/2;
                     this.vy = Math.abs(this.vy) * this.bounciness;
                     this.angularVelocity += (Math.random() - 0.5) * 3;
-                    if (this.type === 'koi' && Math.abs(this.vy) > 100) createRipple(this.x, this.y);
                 }
                 if (this.y > window.innerHeight - this.height/2) {
                     this.y = window.innerHeight - this.height/2;
                     this.vy = -Math.abs(this.vy) * this.bounciness;
                     this.angularVelocity += (Math.random() - 0.5) * 3;
-                    if (this.type === 'koi' && Math.abs(this.vy) > 100) createRipple(this.x, this.y);
                 }
                 
-                // Update visual position with scale effect
                 const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                 const scale = 1 + Math.min(speed / 500, 0.3);
                 this.element.style.transform = `translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${scale})`;
@@ -648,11 +294,6 @@
                     
                     this.angularVelocity += (Math.random() - 0.5) * 8;
                     other.angularVelocity += (Math.random() - 0.5) * 8;
-                    
-                    // Create ripple for koi collisions - less frequent
-                    if (this.type === 'koi' && currentMode === 'koi' && Math.random() > 0.5) {
-                        createRipple(this.x - dx/2, this.y - dy/2);
-                    }
                 }
             }
             
@@ -661,259 +302,44 @@
             }
         }
         
-        // Water effects
-        function createRipple(x, y) {
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            document.body.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 1500);
-        }
-        
-        function createSplash(x, y, intensity) {
-            createRipple(x, y);
-            const particleCount = Math.min(Math.floor(intensity / 30), 12); // Fewer particles
-            
-            for (let i = 0; i < particleCount; i++) {
-                const splash = document.createElement('div');
-                splash.className = 'splash';
-                splash.style.left = x + 'px';
-                splash.style.top = y + 'px';
-                
-                const angle = (Math.PI * 2 * i) / particleCount;
-                const velocity = 100 + Math.random() * 100;
-                const vx = Math.cos(angle) * velocity;
-                const vy = Math.sin(angle) * velocity - 200;
-                
-                let posX = x;
-                let posY = y;
-                let velocityY = vy;
-                let frameCount = 0;
-                
-                const animate = () => {
-                    posX += vx * 0.016;
-                    velocityY += 500 * 0.016;
-                    posY += velocityY * 0.016;
-                    frameCount++;
-                    
-                    splash.style.left = posX + 'px';
-                    splash.style.top = posY + 'px';
-                    
-                    // Remove after 60 frames or off screen
-                    if (posY < window.innerHeight && frameCount < 60) {
-                        requestAnimationFrame(animate);
-                    } else {
-                        splash.remove();
-                    }
-                };
-                
-                requestAnimationFrame(animate);
-                document.body.appendChild(splash);
-            }
-        }
-        
-        // Global variables
-        let creatures = [];
-        let sandParticles = [];
-        let currentCreatureIndex = 0;
-        let lastShakeTime = 0;
-        let shakeCount = 0;
-        let consecutiveShakes = 0;
-        let lastShakeWindow = 0;
+        let shrimps = [];
+        let currentShrimpIndex = 0;
         let gravity = { x: 0, y: 100 };
         let lastTime = performance.now();
-        let animationId = null;
-        let prefersReducedMotion = false;
-        let currentMode = 'shrimp';
+        let prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         
-        // Check for reduced motion preference
-        if (window.matchMedia) {
-            prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        }
-        
-        // Request motion permission and initialize
-        async function requestMotion() {
-            console.log('requestMotion called');
-            try {
-                if (typeof DeviceMotionEvent?.requestPermission === 'function') {
-                    console.log('Requesting motion permission...');
-                    const res = await DeviceMotionEvent.requestPermission();
-                    console.log('Motion permission result:', res);
-                    if (res === 'granted') {
-                        init();
-                    } else {
-                        console.log('Motion permission denied, using fixed gravity');
-                        init();
-                    }
-                } else {
-                    console.log('No motion permission needed (desktop or Android)');
-                    init();
-                }
-            } catch (err) {
-                console.error('Error requesting motion permission:', err);
-                init();
-            }
-        }
-        
-        // Initialize
         function init() {
-            console.log('init() called');
-            try {
-                document.getElementById('gate').remove();
-                document.getElementById('birthday-message').style.display = 'block';
-                
-                const canvas = document.getElementById('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                console.log('Canvas initialized:', canvas.width, 'x', canvas.height);
-                
-                // Add initial creatures - fewer for better performance
-                for (let i = 0; i < 5; i++) {
-                    currentCreatureIndex = i;
-                    setTimeout(() => {
-                        console.log('Adding creature', i);
-                        addCreature(
-                            Math.random() * window.innerWidth,
-                            Math.random() * window.innerHeight
-                        );
-                    }, i * 150);
-                }
-                
-                // Event handlers
-                if (!prefersReducedMotion) {
-                    window.addEventListener('devicemotion', handleMotion);
-                }
-                
-                document.addEventListener('touchmove', handleTouchMove, { passive: false });
-                document.addEventListener('touchend', handleTouchEnd);
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', handleMouseUp);
-                window.addEventListener('resize', handleResize);
-                
-                console.log('Starting animation...');
-                animate();
-            } catch (err) {
-                console.error('Error in init():', err);
-            }
-        }
-        
-        // Switch between modes
-        function switchMode() {
-            let newMode;
-            if (currentMode === 'shrimp') {
-                newMode = 'koi';
-            } else if (currentMode === 'koi') {
-                newMode = 'sand';
-            } else {
-                newMode = 'shrimp';
-            }
+            console.log('Initializing...');
+            document.getElementById('gate').remove();
+            document.getElementById('birthday-message').style.display = 'block';
             
-            currentMode = newMode;
-            
-            // Update body classes
-            document.body.classList.remove('koi-mode', 'sand-mode');
-            if (newMode === 'koi') {
-                document.body.classList.add('koi-mode');
-            } else if (newMode === 'sand') {
-                document.body.classList.add('sand-mode');
-            }
-            
-            // Show mode indicator
-            const indicator = document.getElementById('mode-indicator');
-            if (newMode === 'koi') {
-                indicator.textContent = '🐟 Koi Pond Mode 🐟';
-            } else if (newMode === 'sand') {
-                indicator.textContent = '🌅 Sand Art Mode 🌅';
-            } else {
-                indicator.textContent = '🦐 Shrimp Party Mode 🦐';
-            }
-            indicator.classList.add('show');
-            setTimeout(() => indicator.classList.remove('show'), 2000);
-            
-            // Clear existing creatures
-            creatures.forEach(c => c.destroy());
-            creatures = [];
-            sandParticles.forEach(p => p.destroy());
-            sandParticles = [];
-            
-            // Add new elements based on mode
-            if (newMode === 'sand') {
-                // Add sand particles
-                for (let i = 0; i < 20; i++) {
-                    setTimeout(() => {
-                        const particle = new SandParticle(
-                            Math.random() * window.innerWidth,
-                            Math.random() * window.innerHeight,
-                            i
-                        );
-                        sandParticles.push(particle);
-                    }, i * 50);
-                }
-            } else {
-                // Add creatures for shrimp/koi modes
-                for (let i = 0; i < 5; i++) {
-                    currentCreatureIndex = i;
-                    setTimeout(() => {
-                        addCreature(
-                            Math.random() * window.innerWidth,
-                            Math.random() * window.innerHeight
-                        );
-                    }, i * 150);
-                }
-            }
-            
-            // Update message
-            const shakeMsg = document.getElementById('shake-message');
-            if (newMode === 'koi') {
-                shakeMsg.innerHTML = '🐟 KOI TIME! 🐟';
-            } else if (newMode === 'sand') {
-                shakeMsg.innerHTML = '🌅 SAND FLOW! 🌅';
-            } else {
-                shakeMsg.innerHTML = '🦐 SHAKE IT UP! 🦐';
-            }
-        }
-        
-        // Add creature
-        function addCreature(x, y) {
-            const creature = new Creature(
-                x || Math.random() * window.innerWidth,
-                y || Math.random() * window.innerHeight / 2,
-                currentMode,
-                currentCreatureIndex % 2
-            );
-            creatures.push(creature);
-        }
-        
-        // Add creature species with burst
-        function addCreatureSpecies() {
-            currentCreatureIndex++;
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            
-            // Only add 3 new creatures to prevent overcrowding
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 5; i++) {
+                currentShrimpIndex = i;
                 setTimeout(() => {
-                    const angle = (Math.PI * 2 * i) / 3;
-                    const distance = 50;
-                    addCreature(
-                        centerX + Math.cos(angle) * distance,
-                        centerY + Math.sin(angle) * distance
+                    addShrimp(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
                     );
-                    
-                    const newCreature = creatures[creatures.length - 1];
-                    newCreature.vx = Math.cos(angle) * 150;
-                    newCreature.vy = Math.sin(angle) * 150;
-                    
-                    if (currentMode === 'koi') {
-                        createSplash(newCreature.x, newCreature.y, 200);
-                    }
-                }, i * 50);
+                }, i * 150);
             }
+            
+            if (!prefersReducedMotion) {
+                window.addEventListener('devicemotion', handleMotion);
+            }
+            
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            animate();
         }
         
-        // Animation loop
+        function addShrimp(x, y) {
+            const shrimp = new Shrimp(x, y, currentShrimpIndex % shrimpSprites.length);
+            shrimps.push(shrimp);
+        }
+        
         function animate() {
             const currentTime = performance.now();
             const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
@@ -921,44 +347,31 @@
             
             const damping = prefersReducedMotion ? 0.95 : 0.985;
             
-            if (currentMode === 'sand') {
-                // Update sand particles
-                for (let i = 0; i < sandParticles.length; i++) {
-                    sandParticles[i].update(dt, gravity, damping);
-                    
-                    // Liquid interactions
-                    for (let j = i + 1; j < sandParticles.length; j++) {
-                        sandParticles[i].checkLiquidInteraction(sandParticles[j]);
-                    }
-                }
-            } else {
-                // Update creatures
-                for (let i = 0; i < creatures.length; i++) {
-                    creatures[i].update(dt, gravity, damping);
-                    
-                    // Check collisions
-                    for (let j = i + 1; j < creatures.length; j++) {
-                        creatures[i].checkCollision(creatures[j]);
-                    }
+            for (let i = 0; i < shrimps.length; i++) {
+                shrimps[i].update(dt, gravity, damping);
+                
+                for (let j = i + 1; j < shrimps.length; j++) {
+                    shrimps[i].checkCollision(shrimps[j]);
                 }
             }
             
-            animationId = requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
         }
         
-        // Touch/mouse handlers
+        function handleMotion(event) {
+            if (!event.accelerationIncludingGravity) return;
+            const { x, y } = event.accelerationIncludingGravity;
+            gravity.x = x * 30;
+            gravity.y = -y * 30;
+        }
+        
         function handleTouchMove(e) {
             e.preventDefault();
             for (let i = 0; i < e.touches.length; i++) {
                 const touch = e.touches[i];
-                creatures.forEach(creature => {
-                    if (creature.touchId === touch.identifier) {
-                        creature.handleDrag(touch.clientX, touch.clientY);
-                    }
-                });
-                sandParticles.forEach(particle => {
-                    if (particle.touchId === touch.identifier) {
-                        particle.handleDrag(touch.clientX, touch.clientY);
+                shrimps.forEach(shrimp => {
+                    if (shrimp.touchId === touch.identifier) {
+                        shrimp.handleDrag(touch.clientX, touch.clientY);
                     }
                 });
             }
@@ -966,133 +379,44 @@
         
         function handleTouchEnd(e) {
             const remainingTouches = Array.from(e.touches).map(t => t.identifier);
-            creatures.forEach(creature => {
-                if (creature.touchId && !remainingTouches.includes(creature.touchId)) {
-                    creature.endDrag();
-                }
-            });
-            sandParticles.forEach(particle => {
-                if (particle.touchId && !remainingTouches.includes(particle.touchId)) {
-                    particle.endDrag();
+            shrimps.forEach(shrimp => {
+                if (shrimp.touchId && !remainingTouches.includes(shrimp.touchId)) {
+                    shrimp.endDrag();
                 }
             });
         }
         
         function handleMouseMove(e) {
-            creatures.forEach(creature => {
-                if (creature.touchId === 'mouse') {
-                    creature.handleDrag(e.clientX, e.clientY);
-                }
-            });
-            sandParticles.forEach(particle => {
-                if (particle.touchId === 'mouse') {
-                    particle.handleDrag(e.clientX, e.clientY);
+            shrimps.forEach(shrimp => {
+                if (shrimp.touchId === 'mouse') {
+                    shrimp.handleDrag(e.clientX, e.clientY);
                 }
             });
         }
         
         function handleMouseUp(e) {
-            creatures.forEach(creature => {
-                if (creature.touchId === 'mouse') {
-                    creature.endDrag();
-                }
-            });
-            sandParticles.forEach(particle => {
-                if (particle.touchId === 'mouse') {
-                    particle.endDrag();
+            shrimps.forEach(shrimp => {
+                if (shrimp.touchId === 'mouse') {
+                    shrimp.endDrag();
                 }
             });
         }
         
-        // Device motion with mode switching
-        const SHAKE_THRESHOLD = 15;
-        let shakeMessageTimeout;
-        
-        function handleMotion(event) {
-            if (!event.accelerationIncludingGravity) return;
-            
-            const { x, y, z } = event.accelerationIncludingGravity;
-            const magnitude = Math.sqrt(x * x + y * y + z * z);
-            
-            // Much more responsive to tilting
-            gravity.x = x * 30; // Increased from 10
-            gravity.y = -y * 30; // Increased from 10
-            
-            if (magnitude > SHAKE_THRESHOLD) {
-                const now = Date.now();
-                if (now - lastShakeTime > 300) {
-                    lastShakeTime = now;
-                    shakeCount++;
-                    
-                    // Track consecutive shakes
-                    if (now - lastShakeWindow < 2000) {
-                        consecutiveShakes++;
-                    } else {
-                        consecutiveShakes = 1;
-                    }
-                    lastShakeWindow = now;
-                    
-                    // Switch modes on 3 consecutive shakes
-                    if (consecutiveShakes >= 3) {
-                        switchMode();
-                        consecutiveShakes = 0;
-                    }
-                    
-                    // Show shake message
-                    const shakeMsg = document.getElementById('shake-message');
-                    shakeMsg.style.display = 'block';
-                    clearTimeout(shakeMessageTimeout);
-                    shakeMessageTimeout = setTimeout(() => {
-                        shakeMsg.style.display = 'none';
-                    }, 1500);
-                    
-                    // Apply force based on mode
-                    if (currentMode === 'sand') {
-                        sandParticles.forEach(particle => {
-                            particle.vx += (Math.random() - 0.5) * 200;
-                            particle.vy += (Math.random() - 0.5) * 200;
-                        });
-                    } else {
-                        creatures.forEach(creature => {
-                            creature.applyForce(
-                                (Math.random() - 0.5) * 100,
-                                (Math.random() - 0.5) * 100
-                            );
-                        });
-                    }
-                    
-                    // Double shake detection
-                    if (shakeCount % 2 === 0 && currentMode !== 'sand') {
-                        addCreatureSpecies();
-                    }
+        async function requestMotion() {
+            console.log('Requesting motion permission...');
+            try {
+                if (typeof DeviceMotionEvent?.requestPermission === 'function') {
+                    const res = await DeviceMotionEvent.requestPermission();
+                    console.log('Permission result:', res);
                 }
+            } catch (err) {
+                console.log('Motion permission error:', err);
             }
+            init();
         }
         
-        // Handle resize
-        function handleResize() {
-            const canvas = document.getElementById('canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        // Start button listener
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded, attaching button listener');
-            const startBtn = document.getElementById('startBtn');
-            if (startBtn) {
-                startBtn.addEventListener('click', () => {
-                    console.log('Start button clicked');
-                    requestMotion();
-                });
-            } else {
-                console.error('Start button not found!');
-            }
-        });
-        
-        } catch (err) {
-            console.error('Fatal error in script:', err);
-        }
+        document.getElementById('startBtn').addEventListener('click', requestMotion);
+        console.log('Setup complete!');
     </script>
 </body>
 </html>
