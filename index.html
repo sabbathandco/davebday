@@ -18,12 +18,34 @@
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background 1s ease;
+        }
+        
+        body.koi-mode {
+            background: radial-gradient(ellipse at center, #1a4d66 0%, #0d2936 100%);
+            animation: none;
         }
         
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+        
+        #water-overlay {
+            position: fixed;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            background: linear-gradient(180deg, 
+                rgba(0,119,190,0.3) 0%, 
+                rgba(0,68,119,0.5) 50%, 
+                rgba(0,34,68,0.7) 100%);
+        }
+        
+        body.koi-mode #water-overlay {
+            opacity: 1;
         }
         
         #gate {
@@ -87,87 +109,136 @@
             margin-bottom: 0.5rem;
         }
         
-        .shrimp {
+        #birthday-message p {
+            font-size: 1.2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        #shake-message {
             position: absolute;
-            width: 60px;
-            height: 40px;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            animation: shake-text 0.5s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 10;
+            display: none;
+        }
+        
+        @keyframes shake-text {
+            0% { transform: translateX(-50%) rotate(-5deg) scale(1); }
+            100% { transform: translateX(-50%) rotate(5deg) scale(1.1); }
+        }
+        
+        #mode-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        #mode-indicator.show {
+            opacity: 1;
+        }
+        
+        .creature {
+            position: absolute;
             transform-origin: center;
             will-change: transform;
+            cursor: grab;
+        }
+        
+        .ripple {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple-expand 1.5s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-expand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+            }
+        }
+        
+        .splash {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
         }
         
         @media (prefers-reduced-motion: reduce) {
             @keyframes gradientShift {
                 0%, 100% { background-position: 0% 50%; }
             }
-            .shrimp {
-                animation: float 6s ease-in-out infinite;
-            }
-        }
-        
-        // Add particle effects
-        .particle {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particle-fade 1s ease-out forwards;
-        }
-        
-        @keyframes particle-fade {
-            0% { 
-                transform: scale(0) translate(0, 0);
-                opacity: 1;
-            }
-            100% { 
-                transform: scale(3) translate(var(--dx), var(--dy));
-                opacity: 0;
-            }
         }
     </style>
 </head>
 <body>
+    <div id="water-overlay"></div>
+    
     <div id="gate">
         <h1>🦐 Happy Birthday David Buivid! 🦐</h1>
-        <button id="startBtn">Tap to start the shrimp party 🦐🎉</button>
+        <button id="startBtn">Tap to start the party 🎉</button>
     </div>
     
     <div id="birthday-message" style="display: none;">
         <h1>🎉 Happy Birthday David! 🎉</h1>
-        <p>Tap & flick the shrimp!</p>
+        <p>Tap & flick the creatures!</p>
     </div>
     
     <div id="shake-message" style="display: none;">
         🦐 SHAKE IT UP! 🦐
     </div>
     
+    <div id="mode-indicator"></div>
+    
     <canvas id="canvas"></canvas>
     
     <script>
-        // Shrimp sprites as base64 encoded SVGs - more realistic shrimp shapes
+        // Shrimp sprites
         const shrimpSprites = [
-            // Shrimp 1 - Orange/Red
             'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
                 <g transform="rotate(-10 40 20)">
-                    <!-- Body segments -->
                     <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
                     <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ff7745" stroke="#d64545" stroke-width="1"/>
                     <ellipse cx="48" cy="20" rx="12" ry="8" fill="#ff8855" stroke="#d64545" stroke-width="1"/>
                     <ellipse cx="58" cy="20" rx="8" ry="6" fill="#ff9965" stroke="#d64545" stroke-width="1"/>
-                    <!-- Tail fan -->
                     <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ff6b35" stroke="#d64545" stroke-width="1"/>
-                    <!-- Eye -->
                     <circle cx="15" cy="17" r="3" fill="#000"/>
                     <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <!-- Antennae -->
                     <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#d64545" stroke-width="1.5" fill="none"/>
-                    <!-- Legs -->
                     <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#d64545" stroke-width="1" fill="none"/>
                 </g>
             </svg>`),
-            
-            // Shrimp 2 - Pink
             'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
                 <g transform="rotate(-10 40 20)">
                     <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ff1493" stroke="#c71585" stroke-width="1"/>
@@ -180,77 +251,74 @@
                     <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#c71585" stroke-width="1.5" fill="none"/>
                     <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#c71585" stroke-width="1" fill="none"/>
                 </g>
-            </svg>`),
-            
-            // Shrimp 3 - Purple
-            'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#9370db" stroke="#7b68ee" stroke-width="1"/>
-                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#a58fe9" stroke="#7b68ee" stroke-width="1"/>
-                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#b19cd9" stroke="#7b68ee" stroke-width="1"/>
-                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#dda0dd" stroke="#7b68ee" stroke-width="1"/>
-                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#9370db" stroke="#7b68ee" stroke-width="1"/>
-                    <circle cx="15" cy="17" r="3" fill="#000"/>
-                    <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#7b68ee" stroke-width="1.5" fill="none"/>
-                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#7b68ee" stroke-width="1" fill="none"/>
-                </g>
-            </svg>`),
-            
-            // Shrimp 4 - Cyan/Teal
-            'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#00ced1" stroke="#008b8b" stroke-width="1"/>
-                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#40e0d0" stroke="#008b8b" stroke-width="1"/>
-                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#48d1cc" stroke="#008b8b" stroke-width="1"/>
-                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#afeeee" stroke="#008b8b" stroke-width="1"/>
-                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#00ced1" stroke="#008b8b" stroke-width="1"/>
-                    <circle cx="15" cy="17" r="3" fill="#000"/>
-                    <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#008b8b" stroke-width="1.5" fill="none"/>
-                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#008b8b" stroke-width="1" fill="none"/>
-                </g>
-            </svg>`),
-            
-            // Shrimp 5 - Golden/Yellow
-            'data:image/svg+xml;base64,' + btoa(`<svg width="80" height="40" xmlns="http://www.w3.org/2000/svg">
-                <g transform="rotate(-10 40 20)">
-                    <ellipse cx="20" cy="20" rx="18" ry="12" fill="#ffd700" stroke="#daa520" stroke-width="1"/>
-                    <ellipse cx="35" cy="20" rx="15" ry="10" fill="#ffed4e" stroke="#daa520" stroke-width="1"/>
-                    <ellipse cx="48" cy="20" rx="12" ry="8" fill="#fff68f" stroke="#daa520" stroke-width="1"/>
-                    <ellipse cx="58" cy="20" rx="8" ry="6" fill="#fffacd" stroke="#daa520" stroke-width="1"/>
-                    <path d="M63 20 L70 15 L72 20 L70 25 Z" fill="#ffd700" stroke="#daa520" stroke-width="1"/>
-                    <circle cx="15" cy="17" r="3" fill="#000"/>
-                    <circle cx="16" cy="16" r="1" fill="#fff"/>
-                    <path d="M10 15 Q5 10 3 8 M10 17 Q5 15 2 15" stroke="#daa520" stroke-width="1.5" fill="none"/>
-                    <path d="M20 25 L18 30 M25 26 L23 31 M30 26 L28 31 M35 25 L33 30" stroke="#daa520" stroke-width="1" fill="none"/>
-                </g>
             </svg>`)
         ];
         
-        // Enhanced physics simulation with more exciting movement
-        class Shrimp {
-            constructor(x, y, spriteIndex) {
+        // Koi sprites
+        const koiSprites = [
+            'data:image/svg+xml;base64,' + btoa(`<svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="koiGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#fff;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#ff6b35;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#d64545;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <ellipse cx="60" cy="30" rx="45" ry="20" fill="url(#koiGrad1)" stroke="#333" stroke-width="1"/>
+                <ellipse cx="80" cy="30" rx="25" ry="15" fill="#ff6b35" opacity="0.7"/>
+                <path d="M15 30 Q5 20 0 15 M15 30 Q5 40 0 45" stroke="#333" stroke-width="2" fill="none"/>
+                <path d="M105 30 L115 20 L120 30 L115 40 Z" fill="#ff6b35" stroke="#333" stroke-width="1"/>
+                <circle cx="30" cy="25" r="4" fill="#000"/>
+                <circle cx="31" cy="24" r="2" fill="#fff"/>
+                <path d="M40 10 Q45 5 48 3 M50 8 Q55 4 58 2" stroke="#333" stroke-width="1" fill="none"/>
+            </svg>`),
+            'data:image/svg+xml;base64,' + btoa(`<svg width="120" height="60" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="koiGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#000;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#333;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#666;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <ellipse cx="60" cy="30" rx="45" ry="20" fill="url(#koiGrad2)" stroke="#000" stroke-width="1"/>
+                <ellipse cx="40" cy="30" rx="15" ry="10" fill="#fff" opacity="0.8"/>
+                <ellipse cx="80" cy="30" rx="15" ry="10" fill="#fff" opacity="0.8"/>
+                <path d="M15 30 Q5 20 0 15 M15 30 Q5 40 0 45" stroke="#000" stroke-width="2" fill="none"/>
+                <path d="M105 30 L115 20 L120 30 L115 40 Z" fill="#333" stroke="#000" stroke-width="1"/>
+                <circle cx="30" cy="25" r="4" fill="#000"/>
+                <circle cx="31" cy="24" r="2" fill="#fff"/>
+                <path d="M40 10 Q45 5 48 3 M50 8 Q55 4 58 2" stroke="#000" stroke-width="1" fill="none"/>
+            </svg>`)
+        ];
+        
+        // Creature class (works for both shrimp and koi)
+        class Creature {
+            constructor(x, y, type, spriteIndex) {
                 this.x = x;
                 this.y = y;
-                this.vx = (Math.random() - 0.5) * 200;
-                this.vy = (Math.random() - 0.5) * 200;
+                this.type = type;
+                this.vx = (Math.random() - 0.5) * (type === 'shrimp' ? 200 : 100);
+                this.vy = (Math.random() - 0.5) * (type === 'shrimp' ? 200 : 100);
                 this.angle = Math.random() * Math.PI * 2;
-                this.angularVelocity = (Math.random() - 0.5) * 5;
+                this.angularVelocity = (Math.random() - 0.5) * (type === 'shrimp' ? 5 : 2);
                 this.spriteIndex = spriteIndex;
-                this.width = 80;
-                this.height = 40;
+                this.width = type === 'shrimp' ? 80 : 120;
+                this.height = type === 'shrimp' ? 40 : 60;
                 this.bounciness = 0.85 + Math.random() * 0.1;
-                this.mass = 0.8 + Math.random() * 0.4;
+                this.mass = type === 'shrimp' ? (0.8 + Math.random() * 0.4) : (1.5 + Math.random() * 0.5);
                 this.swimTimer = Math.random() * Math.PI * 2;
                 this.isDragging = false;
                 this.touchId = null;
                 
                 this.element = document.createElement('img');
-                this.element.className = 'shrimp';
-                this.element.src = shrimpSprites[spriteIndex % shrimpSprites.length];
-                this.element.style.filter = `hue-rotate(${Math.random() * 30 - 15}deg) brightness(${0.9 + Math.random() * 0.2})`;
-                this.element.style.cursor = 'grab';
+                this.element.className = 'creature';
+                const sprites = type === 'shrimp' ? shrimpSprites : koiSprites;
+                this.element.src = sprites[spriteIndex % sprites.length];
+                
+                if (type === 'shrimp') {
+                    this.element.style.filter = `hue-rotate(${Math.random() * 30 - 15}deg) brightness(${0.9 + Math.random() * 0.2})`;
+                }
+                
                 document.body.appendChild(this.element);
                 
                 // Touch/mouse handlers
@@ -311,6 +379,11 @@
                     this.vx *= flickMultiplier;
                     this.vy *= flickMultiplier;
                     this.angularVelocity = (Math.random() - 0.5) * 20;
+                    
+                    // Create splash if koi
+                    if (this.type === 'koi' && currentMode === 'koi') {
+                        createSplash(this.x, this.y, Math.abs(this.vx) + Math.abs(this.vy));
+                    }
                 }
                 
                 this.isDragging = false;
@@ -323,50 +396,56 @@
                 if (this.isDragging) return;
                 
                 // Natural swimming motion
-                this.swimTimer += dt * 3;
-                const swimForce = Math.sin(this.swimTimer) * 20;
+                this.swimTimer += dt * (this.type === 'shrimp' ? 3 : 1.5);
+                const swimForce = Math.sin(this.swimTimer) * (this.type === 'shrimp' ? 20 : 10);
                 
                 // Apply gravity with swimming motion
                 this.vx += (gravity.x * dt + Math.cos(this.angle) * swimForce * dt) / this.mass;
                 this.vy += (gravity.y * dt + Math.sin(this.angle) * swimForce * dt) / this.mass;
                 
                 // Add some random "wiggle"
-                this.vx += (Math.random() - 0.5) * 50 * dt;
-                this.vy += (Math.random() - 0.5) * 50 * dt;
+                const wiggleFactor = this.type === 'shrimp' ? 50 : 20;
+                this.vx += (Math.random() - 0.5) * wiggleFactor * dt;
+                this.vy += (Math.random() - 0.5) * wiggleFactor * dt;
                 
-                // Apply damping
-                this.vx *= damping;
-                this.vy *= damping;
-                this.angularVelocity *= damping;
+                // Apply damping (more for koi to simulate water resistance)
+                const actualDamping = this.type === 'koi' ? damping * 0.95 : damping;
+                this.vx *= actualDamping;
+                this.vy *= actualDamping;
+                this.angularVelocity *= actualDamping;
                 
                 // Update position
                 this.x += this.vx * dt;
                 this.y += this.vy * dt;
                 this.angle += this.angularVelocity * dt;
                 
-                // Bounce off walls with spin
+                // Bounce off walls
                 if (this.x < this.width/2) {
                     this.x = this.width/2;
                     this.vx = Math.abs(this.vx) * this.bounciness;
                     this.angularVelocity = this.vx * 0.05;
+                    if (this.type === 'koi' && Math.abs(this.vx) > 50) createRipple(this.x, this.y);
                 }
                 if (this.x > window.innerWidth - this.width/2) {
                     this.x = window.innerWidth - this.width/2;
                     this.vx = -Math.abs(this.vx) * this.bounciness;
                     this.angularVelocity = -this.vx * 0.05;
+                    if (this.type === 'koi' && Math.abs(this.vx) > 50) createRipple(this.x, this.y);
                 }
                 if (this.y < this.height/2) {
                     this.y = this.height/2;
                     this.vy = Math.abs(this.vy) * this.bounciness;
                     this.angularVelocity += (Math.random() - 0.5) * 3;
+                    if (this.type === 'koi' && Math.abs(this.vy) > 50) createRipple(this.x, this.y);
                 }
                 if (this.y > window.innerHeight - this.height/2) {
                     this.y = window.innerHeight - this.height/2;
                     this.vy = -Math.abs(this.vy) * this.bounciness;
                     this.angularVelocity += (Math.random() - 0.5) * 3;
+                    if (this.type === 'koi' && Math.abs(this.vy) > 50) createRipple(this.x, this.y);
                 }
                 
-                // Update visual position with scale effect based on velocity
+                // Update visual position with scale effect
                 const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                 const scale = 1 + Math.min(speed / 500, 0.3);
                 this.element.style.transform = `translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${scale})`;
@@ -385,28 +464,23 @@
                 const minDistance = (this.width + other.width) * 0.7;
                 
                 if (distance < minDistance && distance > 0) {
-                    // More realistic collision with mass
                     const angle = Math.atan2(dy, dx);
                     const sin = Math.sin(angle);
                     const cos = Math.cos(angle);
                     
-                    // Rotate velocities
                     const vx1 = this.vx * cos + this.vy * sin;
                     const vy1 = this.vy * cos - this.vx * sin;
                     const vx2 = other.vx * cos + other.vy * sin;
                     const vy2 = other.vy * cos - other.vx * sin;
                     
-                    // Collision reaction with mass
                     const finalVx1 = ((this.mass - other.mass) * vx1 + 2 * other.mass * vx2) / (this.mass + other.mass);
                     const finalVx2 = ((other.mass - this.mass) * vx2 + 2 * this.mass * vx1) / (this.mass + other.mass);
                     
-                    // Rotate back
                     this.vx = finalVx1 * cos - vy1 * sin;
                     this.vy = vy1 * cos + finalVx1 * sin;
                     other.vx = finalVx2 * cos - vy2 * sin;
                     other.vy = vy2 * cos + finalVx2 * sin;
                     
-                    // Separate overlapping shrimp
                     const overlap = minDistance - distance;
                     const separateX = overlap * cos * 0.5;
                     const separateY = overlap * sin * 0.5;
@@ -415,9 +489,13 @@
                     other.x -= separateX;
                     other.y -= separateY;
                     
-                    // Add spin
                     this.angularVelocity += (Math.random() - 0.5) * 8;
                     other.angularVelocity += (Math.random() - 0.5) * 8;
+                    
+                    // Create ripple for koi collisions
+                    if (this.type === 'koi' && currentMode === 'koi') {
+                        createRipple(this.x - dx/2, this.y - dy/2);
+                    }
                 }
             }
             
@@ -426,14 +504,67 @@
             }
         }
         
-        let shrimps = [];
-        let currentShrimpIndex = 0;
+        // Water effects
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1500);
+        }
+        
+        function createSplash(x, y, intensity) {
+            createRipple(x, y);
+            const particleCount = Math.min(Math.floor(intensity / 20), 20);
+            
+            for (let i = 0; i < particleCount; i++) {
+                const splash = document.createElement('div');
+                splash.className = 'splash';
+                splash.style.left = x + 'px';
+                splash.style.top = y + 'px';
+                
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const velocity = 100 + Math.random() * 100;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity - 200;
+                
+                let posX = x;
+                let posY = y;
+                let velocityY = vy;
+                
+                const animate = () => {
+                    posX += vx * 0.016;
+                    velocityY += 500 * 0.016;
+                    posY += velocityY * 0.016;
+                    
+                    splash.style.left = posX + 'px';
+                    splash.style.top = posY + 'px';
+                    
+                    if (posY < window.innerHeight) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        splash.remove();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+                document.body.appendChild(splash);
+            }
+        }
+        
+        // Global variables
+        let creatures = [];
+        let currentCreatureIndex = 0;
         let lastShakeTime = 0;
         let shakeCount = 0;
+        let consecutiveShakes = 0;
+        let lastShakeWindow = 0;
         let gravity = { x: 0, y: 100 };
         let lastTime = performance.now();
         let animationId = null;
         let prefersReducedMotion = false;
+        let currentMode = 'shrimp';
         
         // Check for reduced motion preference
         if (window.matchMedia) {
@@ -452,7 +583,6 @@
                         init();
                     }
                 } else {
-                    // Desktop or Android
                     init();
                 }
             } catch (err) {
@@ -466,71 +596,102 @@
             document.getElementById('gate').remove();
             document.getElementById('birthday-message').style.display = 'block';
             
-            // Canvas for background effects only
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
-            // Add initial shrimp with variety - random positions
+            // Add initial creatures
             for (let i = 0; i < 8; i++) {
-                currentShrimpIndex = i;
+                currentCreatureIndex = i;
                 setTimeout(() => {
-                    addShrimp(
+                    addCreature(
                         Math.random() * window.innerWidth,
                         Math.random() * window.innerHeight
                     );
                 }, i * 150);
             }
             
-            // Handle device motion
+            // Event handlers
             if (!prefersReducedMotion) {
                 window.addEventListener('devicemotion', handleMotion);
             }
             
-            // Touch/mouse event handlers
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
             document.addEventListener('touchend', handleTouchEnd);
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
-            
-            // Handle window resize
             window.addEventListener('resize', handleResize);
             
-            // Start animation loop
             animate();
         }
         
-        // Add a new shrimp
-        function addShrimp(x, y) {
-            const shrimp = new Shrimp(
-                x || Math.random() * window.innerWidth,
-                y || Math.random() * window.innerHeight / 2,
-                currentShrimpIndex % shrimpSprites.length
-            );
-            shrimps.push(shrimp);
+        // Switch between modes
+        function switchMode() {
+            const newMode = currentMode === 'shrimp' ? 'koi' : 'shrimp';
+            currentMode = newMode;
+            
+            document.body.classList.toggle('koi-mode', newMode === 'koi');
+            
+            // Show mode indicator
+            const indicator = document.getElementById('mode-indicator');
+            indicator.textContent = newMode === 'koi' ? '🐟 Koi Pond Mode 🐟' : '🦐 Shrimp Party Mode 🦐';
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 2000);
+            
+            // Clear existing creatures
+            creatures.forEach(c => c.destroy());
+            creatures = [];
+            
+            // Add new creatures
+            for (let i = 0; i < 8; i++) {
+                currentCreatureIndex = i;
+                setTimeout(() => {
+                    addCreature(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
+                    );
+                }, i * 150);
+            }
+            
+            // Update message
+            const shakeMsg = document.getElementById('shake-message');
+            shakeMsg.innerHTML = newMode === 'koi' ? '🐟 KOI TIME! 🐟' : '🦐 SHAKE IT UP! 🦐';
         }
         
-        // Add new shrimp species with burst effect
-        function addShrimpSpecies() {
-            currentShrimpIndex++;
+        // Add creature
+        function addCreature(x, y) {
+            const creature = new Creature(
+                x || Math.random() * window.innerWidth,
+                y || Math.random() * window.innerHeight / 2,
+                currentMode,
+                currentCreatureIndex % 2
+            );
+            creatures.push(creature);
+        }
+        
+        // Add creature species with burst
+        function addCreatureSpecies() {
+            currentCreatureIndex++;
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
             
-            // Create a burst of shrimp
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
                     const angle = (Math.PI * 2 * i) / 5;
                     const distance = 50;
-                    addShrimp(
+                    addCreature(
                         centerX + Math.cos(angle) * distance,
                         centerY + Math.sin(angle) * distance
                     );
                     
-                    // Give them outward velocity
-                    const newShrimp = shrimps[shrimps.length - 1];
-                    newShrimp.vx = Math.cos(angle) * 100;
-                    newShrimp.vy = Math.sin(angle) * 100;
+                    const newCreature = creatures[creatures.length - 1];
+                    newCreature.vx = Math.cos(angle) * 100;
+                    newCreature.vy = Math.sin(angle) * 100;
+                    
+                    if (currentMode === 'koi') {
+                        createSplash(newCreature.x, newCreature.y, 200);
+                    }
                 }, i * 50);
             }
         }
@@ -541,15 +702,15 @@
             const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
             lastTime = currentTime;
             
-            const damping = prefersReducedMotion ? 0.95 : 0.985; // Less damping for more energetic movement
+            const damping = prefersReducedMotion ? 0.95 : 0.985;
             
-            // Update shrimp
-            for (let i = 0; i < shrimps.length; i++) {
-                shrimps[i].update(dt, gravity, damping);
+            // Update creatures
+            for (let i = 0; i < creatures.length; i++) {
+                creatures[i].update(dt, gravity, damping);
                 
                 // Check collisions
-                for (let j = i + 1; j < shrimps.length; j++) {
-                    shrimps[i].checkCollision(shrimps[j]);
+                for (let j = i + 1; j < creatures.length; j++) {
+                    creatures[i].checkCollision(creatures[j]);
                 }
             }
             
@@ -561,9 +722,9 @@
             e.preventDefault();
             for (let i = 0; i < e.touches.length; i++) {
                 const touch = e.touches[i];
-                shrimps.forEach(shrimp => {
-                    if (shrimp.touchId === touch.identifier) {
-                        shrimp.handleDrag(touch.clientX, touch.clientY);
+                creatures.forEach(creature => {
+                    if (creature.touchId === touch.identifier) {
+                        creature.handleDrag(touch.clientX, touch.clientY);
                     }
                 });
             }
@@ -571,31 +732,31 @@
         
         function handleTouchEnd(e) {
             const remainingTouches = Array.from(e.touches).map(t => t.identifier);
-            shrimps.forEach(shrimp => {
-                if (shrimp.touchId && !remainingTouches.includes(shrimp.touchId)) {
-                    shrimp.endDrag();
+            creatures.forEach(creature => {
+                if (creature.touchId && !remainingTouches.includes(creature.touchId)) {
+                    creature.endDrag();
                 }
             });
         }
         
         function handleMouseMove(e) {
-            shrimps.forEach(shrimp => {
-                if (shrimp.touchId === 'mouse') {
-                    shrimp.handleDrag(e.clientX, e.clientY);
+            creatures.forEach(creature => {
+                if (creature.touchId === 'mouse') {
+                    creature.handleDrag(e.clientX, e.clientY);
                 }
             });
         }
         
         function handleMouseUp(e) {
-            shrimps.forEach(shrimp => {
-                if (shrimp.touchId === 'mouse') {
-                    shrimp.endDrag();
+            creatures.forEach(creature => {
+                if (creature.touchId === 'mouse') {
+                    creature.endDrag();
                 }
             });
         }
         
-        // Handle device motion with shake message
-        const SHAKE_THRESHOLD = 15; // m/s²
+        // Device motion with mode switching
+        const SHAKE_THRESHOLD = 15;
         let shakeMessageTimeout;
         
         function handleMotion(event) {
@@ -604,16 +765,28 @@
             const { x, y, z } = event.accelerationIncludingGravity;
             const magnitude = Math.sqrt(x * x + y * y + z * z);
             
-            // Update gravity based on device orientation
             gravity.x = x * 10;
             gravity.y = -y * 10;
             
-            // Detect shake
             if (magnitude > SHAKE_THRESHOLD) {
                 const now = Date.now();
                 if (now - lastShakeTime > 300) {
                     lastShakeTime = now;
                     shakeCount++;
+                    
+                    // Track consecutive shakes
+                    if (now - lastShakeWindow < 2000) {
+                        consecutiveShakes++;
+                    } else {
+                        consecutiveShakes = 1;
+                    }
+                    lastShakeWindow = now;
+                    
+                    // Switch modes on 3 consecutive shakes
+                    if (consecutiveShakes >= 3) {
+                        switchMode();
+                        consecutiveShakes = 0;
+                    }
                     
                     // Show shake message
                     const shakeMsg = document.getElementById('shake-message');
@@ -623,9 +796,9 @@
                         shakeMsg.style.display = 'none';
                     }, 1500);
                     
-                    // Apply force to all shrimp
-                    shrimps.forEach(shrimp => {
-                        shrimp.applyForce(
+                    // Apply force to all creatures
+                    creatures.forEach(creature => {
+                        creature.applyForce(
                             (Math.random() - 0.5) * 100,
                             (Math.random() - 0.5) * 100
                         );
@@ -633,20 +806,20 @@
                     
                     // Double shake detection
                     if (shakeCount % 2 === 0) {
-                        addShrimpSpecies();
+                        addCreatureSpecies();
                     }
                 }
             }
         }
         
-        // Handle window resize
+        // Handle resize
         function handleResize() {
             const canvas = document.getElementById('canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
         
-        // Attach start button listener
+        // Start button listener
         document.getElementById('startBtn').addEventListener('click', requestMotion);
     </script>
 </body>
