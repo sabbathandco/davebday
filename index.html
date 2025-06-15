@@ -734,9 +734,12 @@
         
         // Request motion permission and initialize
         async function requestMotion() {
+            console.log('requestMotion called');
             try {
                 if (typeof DeviceMotionEvent?.requestPermission === 'function') {
+                    console.log('Requesting motion permission...');
                     const res = await DeviceMotionEvent.requestPermission();
+                    console.log('Motion permission result:', res);
                     if (res === 'granted') {
                         init();
                     } else {
@@ -744,6 +747,7 @@
                         init();
                     }
                 } else {
+                    console.log('No motion permission needed (desktop or Android)');
                     init();
                 }
             } catch (err) {
@@ -754,37 +758,45 @@
         
         // Initialize
         function init() {
-            document.getElementById('gate').remove();
-            document.getElementById('birthday-message').style.display = 'block';
-            
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            // Add initial creatures - fewer for better performance
-            for (let i = 0; i < 5; i++) {
-                currentCreatureIndex = i;
-                setTimeout(() => {
-                    addCreature(
-                        Math.random() * window.innerWidth,
-                        Math.random() * window.innerHeight
-                    );
-                }, i * 150);
+            console.log('init() called');
+            try {
+                document.getElementById('gate').remove();
+                document.getElementById('birthday-message').style.display = 'block';
+                
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                console.log('Canvas initialized:', canvas.width, 'x', canvas.height);
+                
+                // Add initial creatures - fewer for better performance
+                for (let i = 0; i < 5; i++) {
+                    currentCreatureIndex = i;
+                    setTimeout(() => {
+                        console.log('Adding creature', i);
+                        addCreature(
+                            Math.random() * window.innerWidth,
+                            Math.random() * window.innerHeight
+                        );
+                    }, i * 150);
+                }
+                
+                // Event handlers
+                if (!prefersReducedMotion) {
+                    window.addEventListener('devicemotion', handleMotion);
+                }
+                
+                document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                document.addEventListener('touchend', handleTouchEnd);
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+                window.addEventListener('resize', handleResize);
+                
+                console.log('Starting animation...');
+                animate();
+            } catch (err) {
+                console.error('Error in init():', err);
             }
-            
-            // Event handlers
-            if (!prefersReducedMotion) {
-                window.addEventListener('devicemotion', handleMotion);
-            }
-            
-            document.addEventListener('touchmove', handleTouchMove, { passive: false });
-            document.addEventListener('touchend', handleTouchEnd);
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-            window.addEventListener('resize', handleResize);
-            
-            animate();
         }
         
         // Switch between modes
@@ -1065,7 +1077,22 @@
         }
         
         // Start button listener
-        document.getElementById('startBtn').addEventListener('click', requestMotion);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, attaching button listener');
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', () => {
+                    console.log('Start button clicked');
+                    requestMotion();
+                });
+            } else {
+                console.error('Start button not found!');
+            }
+        });
+        
+        } catch (err) {
+            console.error('Fatal error in script:', err);
+        }
     </script>
 </body>
 </html>
