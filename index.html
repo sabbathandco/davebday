@@ -313,12 +313,21 @@
                 this.vx = 0;
                 this.vy = 0;
                 this.angle = 0;
-                this.width = 120;
-                this.height = 60;
+                this.baseWidth = 120;
+                this.baseHeight = 60;
+                this.width = this.baseWidth;
+                this.height = this.baseHeight;
                 this.speed = 150;
                 this.target = null;
                 this.eating = false;
                 this.eatTimer = 0;
+                this.shrimpEaten = 0;
+                this.maxShrimp = 8; // Explodes after eating 8 shrimp
+                this.fatness = 1;
+                this.wobbleTimer = 0;
+                this.eatenShrimpTypes = []; // Store sprite indices of eaten shrimp
+                this.exploding = false;
+                this.explosionTimer = 0;
                 
                 this.element = document.createElement('img');
                 this.element.className = 'fish';
@@ -327,6 +336,33 @@
             }
             
             update(dt, shrimps) {
+                // Update wobble for fat fish
+                this.wobbleTimer += dt * 3;
+                
+                // Check if about to explode
+                if (this.shrimpEaten >= this.maxShrimp && !this.exploding) {
+                    this.exploding = true;
+                    this.explosionTimer = 0.5;
+                    this.element.style.filter = 'hue-rotate(0deg) saturate(2) brightness(1.5)';
+                    return 'exploding';
+                }
+                
+                // Handle explosion animation
+                if (this.exploding) {
+                    this.explosionTimer -= dt;
+                    const shakeAmount = 10 * (0.5 - this.explosionTimer);
+                    this.x += (Math.random() - 0.5) * shakeAmount;
+                    this.y += (Math.random() - 0.5) * shakeAmount;
+                    
+                    if (this.explosionTimer <= 0) {
+                        return 'explode';
+                    }
+                    
+                    const explosionScale = this.fatness + (0.5 - this.explosionTimer) * 0.5;
+                    this.element.style.transform = `translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${explosionScale})`;
+                    return null;
+                }
+                
                 // Find nearest shrimp
                 let nearestShrimp = null;
                 let nearestDist = Infinity;
@@ -345,6 +381,9 @@
                 
                 this.target = nearestShrimp;
                 
+                // Slower movement when fatter
+                const speedModifier = 1 - (this.shrimpEaten / this.maxShrimp) * 0.5;
+                
                 if (this.target && !this.eating) {
                     // Chase the nearest shrimp
                     const dx = this.target.x - this.x;
@@ -353,8 +392,8 @@
                     
                     if (dist > 0) {
                         // Accelerate towards target
-                        const targetVx = (dx / dist) * this.speed;
-                        const targetVy = (dy / dist) * this.speed;
+                        const targetVx = (dx / dist) * this.speed * speedModifier;
+                        const targetVy = (dy / dist) * this.speed * speedModifier;
                         
                         this.vx += (targetVx - this.vx) * 0.1;
                         this.vy += (targetVy - this.vy) * 0.1;
@@ -363,7 +402,7 @@
                     }
                     
                     // Check if caught shrimp
-                    if (dist < 40) {
+                    if (dist < 40 + this.shrimpEaten * 5) { // Bigger catch radius when fatter
                         this.eating = true;
                         this.eatTimer = 1.0;
                         return this.target; // Return caught shrimp
@@ -388,17 +427,30 @@
                 this.x = Math.max(this.width/2, Math.min(window.innerWidth - this.width/2, this.x));
                 this.y = Math.max(this.height/2, Math.min(window.innerHeight - this.height/2, this.y));
                 
-                // Update visual
-                const scale = this.eating ? 1.2 : 1;
+                // Update visual with wobble effect
+                const wobble = Math.sin(this.wobbleTimer) * 0.05 * this.shrimpEaten;
+                const scale = (this.eating ? 1.2 : 1) * this.fatness + wobble;
+                const hue = this.shrimpEaten * 15; // Fish gets redder as it eats more
+                this.element.style.filter = `hue-rotate(${hue}deg) saturate(${1 + this.shrimpEaten * 0.1})`;
                 this.element.style.transform = `translate(${this.x - this.width/2}px, ${this.y - this.height/2}px) rotate(${this.angle}rad) scale(${scale})`;
                 
                 return null;
             }
             
+            eatShrimp(shrimpIndex) {
+                this.shrimpEaten++;
+                this.eatenShrimpTypes.push(shrimpIndex);
+                this.fatness = 1 + this.shrimpEaten * 0.15; // Fish gets 15% bigger per shrimp
+                this.width = this.baseWidth * this.fatness;
+                this.height = this.baseHeight * this.fatness;
+            }
+            
             scare(fx, fy) {
                 // Make fish swim away when phone is shaken
-                this.vx = -fx * 2;
-                this.vy = -fy * 2;
+                if (!this.exploding) {
+                    this.vx = -fx * 2;
+                    this.vy = -fy * 2;
+                }
             }
             
             destroy() {
@@ -638,6 +690,23 @@
             prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         }
         
+        // Create particle effect
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 50 + Math.random() * 100;
+            particle.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+            particle.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 1000);
+        }
+        
         // Update shrimp counter
         function updateShrimpCount() {
             document.getElementById('shrimp-count').textContent = shrimps.length;
@@ -777,20 +846,75 @@
             
             // Update fish
             if (fish) {
-                const caughtShrimp = fish.update(dt, shrimps);
-                if (caughtShrimp) {
-                    // Remove eaten shrimp
+                const fishResult = fish.update(dt, shrimps);
+                
+                if (fishResult === 'exploding') {
+                    // Fish is about to explode - show warning
+                    document.getElementById('danger-alert').innerHTML = '🐡 FISH ABOUT TO EXPLODE! 💥';
+                    document.getElementById('danger-alert').style.display = 'block';
+                } else if (fishResult === 'explode') {
+                    // Fish explodes! Release all eaten shrimp
+                    const explosionX = fish.x;
+                    const explosionY = fish.y;
+                    
+                    // Create explosion particles
+                    for (let i = 0; i < 20; i++) {
+                        createParticle(explosionX, explosionY);
+                    }
+                    
+                    // Release eaten shrimp
+                    fish.eatenShrimpTypes.forEach((spriteIndex, i) => {
+                        setTimeout(() => {
+                            const angle = (Math.PI * 2 * i) / fish.eatenShrimpTypes.length;
+                            const distance = 100;
+                            const newShrimp = new Shrimp(
+                                explosionX + Math.cos(angle) * distance,
+                                explosionY + Math.sin(angle) * distance,
+                                spriteIndex
+                            );
+                            // Give them outward velocity
+                            newShrimp.vx = Math.cos(angle) * 400;
+                            newShrimp.vy = Math.sin(angle) * 400;
+                            newShrimp.angularVelocity = (Math.random() - 0.5) * 20;
+                            shrimps.push(newShrimp);
+                            updateShrimpCount();
+                        }, i * 100);
+                    });
+                    
+                    // Remove fish
+                    fish.destroy();
+                    fish = null;
+                    fishSpawnTimer = 15 + Math.random() * 10; // Wait longer before next fish
+                    
+                    // Update alert
+                    document.getElementById('danger-alert').innerHTML = '💥 FISH EXPLODED! SHRIMP FREED! 🦐';
+                    clearTimeout(dangerAlertTimeout);
+                    dangerAlertTimeout = setTimeout(() => {
+                        document.getElementById('danger-alert').style.display = 'none';
+                    }, 3000);
+                } else if (fishResult instanceof Shrimp) {
+                    // Fish caught a shrimp
+                    const caughtShrimp = fishResult;
                     const index = shrimps.indexOf(caughtShrimp);
                     if (index > -1) {
+                        // Store shrimp type before removing
+                        fish.eatShrimp(caughtShrimp.spriteIndex);
+                        
                         shrimps.splice(index, 1);
                         caughtShrimp.destroy();
                         updateShrimpCount();
                         
+                        // Update danger alert based on how full the fish is
+                        if (fish.shrimpEaten >= fish.maxShrimp - 2) {
+                            document.getElementById('danger-alert').innerHTML = `🐡 FISH IS GETTING FULL! (${fish.shrimpEaten}/${fish.maxShrimp}) 💥`;
+                            document.getElementById('danger-alert').style.display = 'block';
+                        }
+                        
                         // If too few shrimp, make fish leave
-                        if (shrimps.length < 2) {
+                        if (shrimps.length < 2 && fish.shrimpEaten < fish.maxShrimp - 1) {
                             fish.destroy();
                             fish = null;
-                            fishSpawnTimer = 10 + Math.random() * 10; // Wait longer before next fish
+                            fishSpawnTimer = 10 + Math.random() * 10;
                         }
                     }
                 }
